@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ASCENT — a Kunnam game</title>
+<meta name="description" content="ASCENT — climb the impossible. A futuristic ascent through the neon canyon, by Kunnam.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="game.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<!-- The canyon. Fixed behind everything; scrolling the page flies the
+     camera through it, so scroll = travel. -->
+<canvas id="terrain" class="terrain" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- ============================== nav ============================== -->
+<header class="nav">
+  <a class="nav__brand" href="../index.html" aria-label="Back to DIAZ">
+    <svg viewBox="0 0 52 50" fill="none" aria-hidden="true">
+      <defs>
+        <mask id="navRock" maskUnits="userSpaceOnUse" x="0" y="0" width="52" height="50">
+          <rect width="52" height="50" fill="#fff"/>
+          <circle cx="30.8" cy="20.8" r="5" fill="#000"/>
+          <circle cx="39.5" cy="30.9" r="6.8" fill="#000"/>
+        </mask>
+      </defs>
+      <g mask="url(#navRock)">
+        <path d="M22 4 L22 46 L2 46 Z"  fill="currentColor" opacity=".55"/>
+        <path d="M22 4 L44 46 L22 46 Z" fill="currentColor" opacity=".95"/>
+      </g>
+      <circle cx="39.5" cy="30.9" r="5" fill="currentColor"/>
+    </svg>
+    <b>Kunnam</b><span>games</span>
+  </a>
+
+  <nav class="nav__links" aria-label="Sections">
+    <a href="#story">Story</a>
+    <a href="#zones">Zones</a>
+    <a href="#classes">Classes</a>
+    <a href="#editions">Editions</a>
+  </nav>
+
+  <span class="nav__badge">Season 0 · pre-order open</span>
+</header>
+
+<!-- Game-HUD progress rail: your "level" down the page -->
+<aside class="rail" id="rail" aria-hidden="true">
+  <span class="rail__lv" id="railLv">LV 01</span>
+  <ul class="rail__dots" id="railDots"></ul>
+  <span class="rail__alt" id="railAlt">0 m</span>
+</aside>
+
+<main id="stage">
+
+  <!-- ============================= hero ============================= -->
+  <section class="hero" id="top" data-sec data-label="BASE CAMP">
+    <p class="hero__studio" data-fly="down">Kunnam Games presents</p>
+
+    <h1 class="hero__title glitch" data-text="ASCENT">ASCENT</h1>
+
+    <p class="hero__tag" data-fly="past">Climb the impossible.</p>
+
+    <div class="hero__cta" data-fly="up">
+      <a class="gbtn gbtn--hot" href="#editions">Pre-order</a>
+      <a class="gbtn" href="#story">Watch story</a>
+    </div>
+
+    <div class="hero__cue" aria-hidden="true">
+      <span>Scroll to begin the climb</span>
+      <i></i>
+    </div>
+  </section>
+
+  <!-- ============================= story ============================ -->
+  <section class="sec" id="story" data-sec data-label="THE SIGNAL">
+    <p class="sec__eyebrow" data-fly="tl">// transmission 001</p>
+    <h2 class="sec__h2" data-scramble data-fly="swingl">The mountain answered back</h2>
+
+    <div class="story">
+      <p data-fly="left">
+        The Kunnam Array went silent forty years ago — a research spire nine
+        kilometres up, abandoned mid-experiment when the weather stopped
+        obeying physics.
+      </p>
+      <p data-fly="right">
+        Last month it started broadcasting again. One repeating signal.
+        Your handle. Your old rope-team callsign. An invitation, or a warning —
+        the only way to find out is up.
+      </p>
+      <p data-fly="br">
+        Climb through three sectors of impossible terrain. Anchor your ropes,
+        manage your heat, keep your team alive. The summit knows you're coming.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ zones ============================= -->
+  <!-- Pinned chapter-switcher: 320vh of scroll, three sectors crossfade
+       inside the sticky frame. Scrolling back rewinds them. -->
+  <section class="zones" id="zones" data-sec data-label="THE ROUTE" data-zones>
+    <div class="zones__sticky">
+      <header class="zones__head">
+        <p class="sec__eyebrow">// route survey</p>
+        <h2 class="sec__h2">Three sectors. One line up.</h2>
+      </header>
+
+      <div class="zones__stage" id="zoneStage" data-active="0">
+        <article class="zone">
+          <div class="zone__art zone__art--foothills" aria-hidden="true"></div>
+          <div class="zone__body">
+            <span class="zone__idx">Sector 01</span>
+            <h3>Neon Foothills</h3>
+            <p>Where the old service roads end. Learn the ropes — literally —
+               among flooded relay stations and fields of dead drones.</p>
+            <ul class="zone__facts">
+              <li>12 routes</li><li>Alt 0–2,400 m</li><li>Hazard: storm cells</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="zone">
+          <div class="zone__art zone__art--shear" aria-hidden="true"></div>
+          <div class="zone__body">
+            <span class="zone__idx">Sector 02</span>
+            <h3>The Shear Wall</h3>
+            <p>A two-kilometre vertical face that generates its own weather.
+               Every anchor point is a negotiation. Some of them argue back.</p>
+            <ul class="zone__facts">
+              <li>18 routes</li><li>Alt 2,400–6,800 m</li><li>Hazard: gravity shears</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="zone">
+          <div class="zone__art zone__art--summit" aria-hidden="true"></div>
+          <div class="zone__body">
+            <span class="zone__idx">Sector 03</span>
+            <h3>Summit Array</h3>
+            <p>The spire itself. Physics is advisory above the cloud deck.
+               Whatever restarted the array is still up here, and it knows your name.</p>
+            <ul class="zone__facts">
+              <li>?? routes</li><li>Alt 6,800–9,700 m</li><li>Hazard: [redacted]</li>
+            </ul>
+          </div>
+        </article>
+
+        <div class="zones__bar" aria-hidden="true"><i id="zoneBar"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================== classes ============================ -->
+  <section class="sec" id="classes" data-sec data-label="ROPE TEAM">
+    <p class="sec__eyebrow" data-fly="tr">// pick your climber</p>
+    <h2 class="sec__h2" data-scramble data-fly="swingr">Three ways up the wall</h2>
+
+    <!-- Cursor-tilt 3D cards. Touch devices get them flat. -->
+    <div class="team" id="team">
+      <article class="tcard" data-fly="bl" style="--d:0">
+        <div class="tcard__inner">
+          <div class="tcard__art tcard__art--scout" aria-hidden="true"></div>
+          <h3>Scout</h3>
+          <p>First on the wall. Sees routes nobody else can.</p>
+          <ul class="stats">
+            <li><span>Speed</span><span class="bar"><i style="--v:92"></i></span></li>
+            <li><span>Grip</span><span class="bar"><i style="--v:58"></i></span></li>
+            <li><span>Load</span><span class="bar"><i style="--v:34"></i></span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="tcard" data-fly="zoom" style="--d:1">
+        <div class="tcard__inner">
+          <div class="tcard__art tcard__art--anchor" aria-hidden="true"></div>
+          <h3>Anchor</h3>
+          <p>The reason the team comes home. Carries the rig, holds the fall.</p>
+          <ul class="stats">
+            <li><span>Speed</span><span class="bar"><i style="--v:41"></i></span></li>
+            <li><span>Grip</span><span class="bar"><i style="--v:96"></i></span></li>
+            <li><span>Load</span><span class="bar"><i style="--v:88"></i></span></li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="tcard" data-fly="br" style="--d:2">
+        <div class="tcard__inner">
+          <div class="tcard__art tcard__art--phantom" aria-hidden="true"></div>
+          <h3>Phantom</h3>
+          <p>Moves through the storm layer like it isn't there. Nobody knows how.</p>
+          <ul class="stats">
+            <li><span>Speed</span><span class="bar"><i style="--v:74"></i></span></li>
+            <li><span>Grip</span><span class="bar"><i style="--v:69"></i></span></li>
+            <li><span>Load</span><span class="bar"><i style="--v:52"></i></span></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- =========================== features ============================ -->
+  <section class="sec" id="features" data-sec data-label="SYSTEMS">
+    <div class="ribbon" aria-hidden="true">
+      <div class="ribbon__track" id="ribbonTrack">
+        <span>Ascent</span><span>·</span><span>Season Zero</span><span>·</span>
+        <span>Pre-order open</span><span>·</span><span>Climb the impossible</span><span>·</span>
+      </div>
+    </div>
+    <p class="sec__eyebrow" data-fly="left">// systems check</p>
+    <h2 class="sec__h2" data-scramble data-fly="left">Built for the long climb</h2>
+
+    <ul class="feats">
+      <li data-fly="tl" style="--d:0"><b>Rope physics</b><p>Every metre of rope is simulated. Slack kills; so does tension.</p></li>
+      <li data-fly="down" style="--d:1"><b>2–4 player teams</b><p>Full campaign in co-op. One rope, shared fate.</p></li>
+      <li data-fly="tr" style="--d:2"><b>120 fps ascent mode</b><p>Performance mode holds 120 on current-gen hardware.</p></li>
+      <li data-fly="bl" style="--d:3"><b>Storm-layer audio</b><p>3D audio that tells you where the wall is when you can't see it.</p></li>
+      <li data-fly="up" style="--d:4"><b>Cross-save</b><p>Start on console, summit on PC. Progress follows your handle.</p></li>
+      <li data-fly="br" style="--d:5"><b>Photo mode</b><p>Freeze the storm. The mountain has never looked this good going wrong.</p></li>
+    </ul>
+  </section>
+
+  <!-- ============================ stats ============================== -->
+  <section class="sec" id="numbers" data-sec data-label="TELEMETRY">
+    <p class="sec__eyebrow" data-fly="right">// expedition telemetry</p>
+    <ul class="gstats">
+      <li data-fly="left" style="--d:0"><b data-count="9.7" data-decimals="1" data-suffix=" km">0</b><span>from base camp to summit</span></li>
+      <li data-fly="down" style="--d:1"><b data-count="48" data-suffix="">0</b><span>named routes at launch</span></li>
+      <li data-fly="right" style="--d:2"><b data-count="120" data-suffix=" fps">0</b><span>ascent performance mode</span></li>
+      <li data-fly="up" style="--d:3"><b data-count="4" data-suffix="">0</b><span>climbers on one rope</span></li>
+    </ul>
+  </section>
+
+  <!-- =========================== editions =========================== -->
+  <section class="sec" id="editions" data-sec data-label="OUTFITTING">
+    <p class="sec__eyebrow" data-fly="bl">// choose your loadout</p>
+    <h2 class="sec__h2" data-scramble data-fly="swingl">Editions</h2>
+
+    <div class="eds">
+      <article class="ed" data-fly="left">
+        <h3>Standard</h3>
+        <p class="ed__price">₹3,999</p>
+        <ul>
+          <li>Full campaign</li>
+          <li>All three sectors</li>
+          <li>Co-op rope teams</li>
+        </ul>
+        <a class="gbtn" href="#">Pre-order</a>
+      </article>
+
+      <article class="ed ed--feat" data-fly="spin">
+        <span class="ed__flag">Most climbed</span>
+        <h3>Deluxe</h3>
+        <p class="ed__price">₹5,499</p>
+        <ul>
+          <li>Everything in Standard</li>
+          <li>Season 0 pass</li>
+          <li>Phantom early unlock</li>
+          <li>72-hour early ascent</li>
+        </ul>
+        <a class="gbtn gbtn--hot" href="#">Pre-order</a>
+      </article>
+
+      <article class="ed" data-fly="right">
+        <h3>Summit</h3>
+        <p class="ed__price">₹7,999</p>
+        <ul>
+          <li>Everything in Deluxe</li>
+          <li>Digital artbook + score</li>
+          <li>Founder rope cosmetics</li>
+          <li>Your handle on the Array</li>
+        </ul>
+        <a class="gbtn" href="#">Pre-order</a>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================= cta =============================== -->
+  <section class="cta" id="cta" data-sec data-label="SUMMIT">
+    <h2 class="cta__h2 glitch" data-text="SEE YOU UP THERE">SEE YOU UP THERE</h2>
+    <a class="gbtn gbtn--hot gbtn--lg" href="#editions" data-fly="past">Pre-order Ascent</a>
+
+    <footer class="foot">
+      <p>Ascent and Kunnam Games are fictional — a landing page study. Prices, specs and the mountain are invented.</p>
+      <a href="../index.html">← Back to DIAZ</a>
+    </footer>
+  </section>
+</main>
+
+<!-- Scroll runway: in Z-mode the stage is fixed, so this spacer is the only
+     thing giving the document height. JS sizes it. -->
+<div id="zspacer" aria-hidden="true"></div>
+
+<script src="game.js"></script>
+</body>
+</html>

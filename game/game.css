@@ -1,0 +1,1235 @@
+/* ============================================================
+   ASCENT — a Kunnam game
+   Neon flythrough. The canvas canyon scrolls with the page;
+   sections arrive from different directions, continuously
+   scrubbed, so scrolling back rewinds everything.
+   ============================================================ */
+
+@property --ang {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+:root {
+  --bg:    #060213;
+  --panel: rgba(13, 7, 30, .78);
+  --line:  rgba(126, 87, 255, .22);
+  --fg:    #f2eefc;
+  --muted: #9d93b8;
+  --cyan:  #00f0ff;
+  --pink:  #ff2ec4;
+  --violet:#8b5cff;
+  --ease:  cubic-bezier(.22, .9, .3, 1);
+  --pad:   max(22px, 5vw);
+  --nav-h: 58px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 14px);
+  background: var(--bg);
+  overflow-x: clip;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Rajdhani', 'Segoe UI', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  cursor: crosshair;
+}
+
+svg { display: block; }
+
+::selection { background: var(--pink); color: #14020e; }
+
+/* ------------------------------------------------ canyon canvas */
+
+.terrain {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Darkens the edges so neon linework doesn't fight the copy. */
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 46%, transparent 42%, rgba(4, 1, 12, .82) 100%);
+}
+
+.nav, .rail, main, .foot { position: relative; z-index: 2; }
+
+/* ------------------------------------------------- custom cursor */
+
+/* Built by JS only on fine pointers without reduced-motion, so touch
+   devices and no-JS never lose their native cursor. */
+.has-cursor, .has-cursor a, .has-cursor button { cursor: none; }
+
+.cur {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.cur__dot {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--cyan);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 8px var(--cyan);
+}
+
+.cur__ring {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  transform: translate(-50%, -50%) rotate(45deg) scale(var(--cs, 1));
+  border: 1px solid color-mix(in srgb, var(--cyan) 75%, transparent);
+  transition: transform .18s var(--ease), border-color .18s;
+}
+
+/* over anything interactive: the reticle locks on — bigger, pink, spinning
+   corner ticks */
+.cur.is-hot .cur__ring {
+  --cs: 1.7;
+  border-color: color-mix(in srgb, var(--pink) 85%, transparent);
+  animation: lock 1.6s linear infinite;
+}
+
+.cur.is-hot .cur__dot { background: var(--pink); box-shadow: 0 0 10px var(--pink); }
+
+@keyframes lock { to { transform: translate(-50%, -50%) rotate(405deg) scale(var(--cs, 1.7)); } }
+
+/* ------------------------------------------------------------ nav */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 0 var(--pad);
+  background: color-mix(in srgb, var(--bg) 68%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav__brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.nav__brand svg { width: 20px; height: auto; }
+.nav__brand b {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.nav__brand span { color: var(--muted); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; }
+
+.nav__links { display: flex; gap: 22px; margin-left: auto; }
+
+.nav__links a {
+  position: relative;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  transition: color .2s, text-shadow .2s;
+}
+.nav__links a:hover { color: var(--cyan); text-shadow: 0 0 12px color-mix(in srgb, var(--cyan) 60%, transparent); }
+
+/* underline sweeps in from the left, retreats to the right */
+.nav__links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--cyan), var(--pink));
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .3s var(--ease);
+}
+.nav__links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+.nav__badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--pink);
+  border: 1px solid color-mix(in srgb, var(--pink) 45%, transparent);
+  padding: 5px 12px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------- progress rail */
+
+.rail {
+  position: fixed;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  letter-spacing: .16em;
+  color: var(--muted);
+}
+
+.rail__lv { color: var(--cyan); }
+
+.rail__dots { list-style: none; display: grid; gap: 9px; }
+
+.rail__dots li {
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--muted);
+  transform: rotate(45deg);           /* diamonds, not dots — game HUD */
+  transition: background .25s, border-color .25s, box-shadow .25s;
+}
+
+.rail__dots li.is-on {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--cyan) 70%, transparent);
+}
+
+.rail__alt { writing-mode: vertical-rl; letter-spacing: .2em; }
+
+/* ============================================================
+   Fly-in system
+   ------------------------------------------------------------
+   JS writes --t (0 = off stage, 1 = landed) continuously from
+   scroll geometry. Direction comes from data-fly, so sections
+   genuinely arrive from wherever suits them — and scrolling
+   back up rewinds the arrival. Gated on .js.
+   ============================================================ */
+
+.js [data-fly] {
+  --t: 0;
+  opacity: calc(var(--t) * 1.25);
+  will-change: transform, opacity;
+}
+
+/* Every fly parent needs perspective, or the rotateX/rotateY/translateZ
+   below silently flatten to nothing (it reaches direct children only). */
+.hero, .sec, .story, .team, .feats, .gstats, .eds, .cta { perspective: 1000px; }
+
+/* --------------------------------------------------------------------
+   The full compass, in real 3D. Each direction is a flight: deep
+   translateZ plus a tumble that unwinds as the element lands. --arc is
+   sin(t·π), written by JS — zero at both ends of the flight, biggest
+   mid-air — which bends the corner paths into curves instead of
+   straight diagonal slides.
+   -------------------------------------------------------------------- */
+
+.js [data-fly="up"]    { transform: translate3d(0, calc((1 - var(--t)) * 24vh), calc((var(--t) - 1) * 220px))
+                                    rotateX(calc((1 - var(--t)) * 55deg)); }
+.js [data-fly="down"]  { transform: translate3d(0, calc((var(--t) - 1) * 24vh), calc((var(--t) - 1) * 220px))
+                                    rotateX(calc((var(--t) - 1) * 55deg)); }
+.js [data-fly="left"]  { transform: translate3d(calc((var(--t) - 1) * 28vw), 0, calc((var(--t) - 1) * 280px))
+                                    rotateY(calc((1 - var(--t)) * 55deg)); }
+.js [data-fly="right"] { transform: translate3d(calc((1 - var(--t)) * 28vw), 0, calc((var(--t) - 1) * 280px))
+                                    rotateY(calc((var(--t) - 1) * 55deg)); }
+
+/* corners — both axes, a two-axis tumble, and the arc lift mid-flight */
+.js [data-fly="tl"] { transform: translate3d(calc((var(--t) - 1) * 24vw),
+                                             calc((var(--t) - 1) * 28vh + var(--arc, 0) * -6vh),
+                                             calc((var(--t) - 1) * 240px))
+                                 rotateX(calc((var(--t) - 1) * 35deg))
+                                 rotateY(calc((1 - var(--t)) * 35deg)); }
+.js [data-fly="tr"] { transform: translate3d(calc((1 - var(--t)) * 24vw),
+                                             calc((var(--t) - 1) * 28vh + var(--arc, 0) * -6vh),
+                                             calc((var(--t) - 1) * 240px))
+                                 rotateX(calc((var(--t) - 1) * 35deg))
+                                 rotateY(calc((var(--t) - 1) * 35deg)); }
+.js [data-fly="bl"] { transform: translate3d(calc((var(--t) - 1) * 24vw),
+                                             calc((1 - var(--t)) * 28vh + var(--arc, 0) * -6vh),
+                                             calc((var(--t) - 1) * 240px))
+                                 rotateX(calc((1 - var(--t)) * 35deg))
+                                 rotateY(calc((1 - var(--t)) * 35deg)); }
+.js [data-fly="br"] { transform: translate3d(calc((1 - var(--t)) * 24vw),
+                                             calc((1 - var(--t)) * 28vh + var(--arc, 0) * -6vh),
+                                             calc((var(--t) - 1) * 240px))
+                                 rotateX(calc((1 - var(--t)) * 35deg))
+                                 rotateY(calc((var(--t) - 1) * 35deg)); }
+
+.js [data-fly="zoom"]  { transform: scale(calc(.55 + .45 * var(--t)))
+                                    translate3d(0, calc((1 - var(--t)) * 40px), 0); }
+
+/* full 360° revolution while scaling in — the flashiest arrival, use sparingly */
+.js [data-fly="spin"]  { transform: rotate(calc((1 - var(--t)) * 360deg))
+                                    scale(calc(.25 + .75 * var(--t))); }
+
+/* from BEHIND the camera: starts huge and blurred, shrinks into place —
+   reads as the page flying past you */
+.js [data-fly="past"]  { transform: scale(calc(2.1 - 1.1 * var(--t)));
+                         filter: blur(calc((1 - var(--t)) * 7px)); }
+
+/* door-swings for headings — hinge on their own edge */
+.js [data-fly="swingl"] { transform: rotateY(calc((1 - var(--t)) * 78deg)); transform-origin: left center; }
+.js [data-fly="swingr"] { transform: rotateY(calc((var(--t) - 1) * 78deg)); transform-origin: right center; }
+
+/* tiltin needs a perspective parent; .feats provides it */
+.js [data-fly="tiltin"] {
+  transform: rotateX(calc((1 - var(--t)) * 58deg))
+             translate3d(0, calc((1 - var(--t)) * 60px), 0);
+  transform-origin: 50% 100%;
+}
+
+/* ----------------------------------------------------------- hero */
+
+.hero {
+  min-height: calc(100vh - var(--nav-h));
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  text-align: center;
+  gap: 22px;
+  padding: 40px var(--pad) 90px;
+  position: relative;
+}
+
+.hero__studio {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--fg);
+  /* This line sits directly on the sun's brightest band — without a dark
+     halo it disappears into the orange exactly like the movie page's
+     headline vanished into the moon. */
+  text-shadow:
+    0 0 6px  rgba(6, 2, 19, .95),
+    0 0 16px rgba(6, 2, 19, .9),
+    0 2px 26px rgba(6, 2, 19, .85);
+}
+
+.hero__title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(56px, 13vw, 176px);
+  font-weight: 900;
+  letter-spacing: .06em;
+  line-height: 1;
+  color: var(--fg);
+  text-shadow:
+    0 0 22px color-mix(in srgb, var(--violet) 55%, transparent),
+    0 0 80px color-mix(in srgb, var(--pink) 30%, transparent);
+}
+
+.hero__tag {
+  font-size: clamp(16px, 2.2vw, 24px);
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  text-shadow: 0 0 16px color-mix(in srgb, var(--cyan) 55%, transparent);
+}
+
+.hero__cta { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+
+.hero__cue {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hero__cue i {
+  width: 1px;
+  height: 34px;
+  background: linear-gradient(var(--cyan), transparent);
+  animation: cue 1.8s var(--ease) infinite;
+}
+
+@keyframes cue { 0% { transform: scaleY(0); transform-origin: top; } 55%, 100% { transform: scaleY(1); transform-origin: top; } }
+
+/* ---- glitch: RGB-split slices, mostly at rest ---- */
+
+.glitch { position: relative; }
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: .85;
+  pointer-events: none;
+}
+
+.glitch::before { color: var(--cyan); z-index: -1; animation: glitchA 5.5s steps(1) infinite; }
+.glitch::after  { color: var(--pink); z-index: -2; animation: glitchB 5.5s steps(1) infinite; }
+
+/* Long quiet stretches; two short bursts per loop. A constant glitch is
+   wallpaper — the silence is what makes the burst read as a fault. */
+@keyframes glitchA {
+  0%, 88%, 94%, 100% { transform: none; clip-path: inset(0 0 100% 0); }
+  89% { transform: translate(-7px, 2px);  clip-path: inset(12% 0 55% 0); }
+  91% { transform: translate(5px, -1px);  clip-path: inset(62% 0 8% 0); }
+  92% { transform: translate(-3px, 0);    clip-path: inset(35% 0 40% 0); }
+}
+
+@keyframes glitchB {
+  0%, 88%, 94%, 100% { transform: none; clip-path: inset(0 0 100% 0); }
+  89% { transform: translate(6px, -2px);  clip-path: inset(55% 0 18% 0); }
+  91% { transform: translate(-5px, 1px);  clip-path: inset(8% 0 70% 0); }
+  92% { transform: translate(3px, 2px);   clip-path: inset(78% 0 4% 0); }
+}
+
+/* Hover burst: the quiet 5.5s loop compresses into a violent half-second.
+   JS adds .is-burst on pointerenter and removes it when the run ends. */
+.glitch.is-burst::before { animation: burstA .5s steps(1) infinite; }
+.glitch.is-burst::after  { animation: burstB .5s steps(1) infinite; }
+
+@keyframes burstA {
+  0%   { transform: translate(-8px, 3px);  clip-path: inset(10% 0 60% 0); }
+  25%  { transform: translate(6px, -2px);  clip-path: inset(48% 0 22% 0); }
+  50%  { transform: translate(-4px, 1px);  clip-path: inset(70% 0 6% 0); }
+  75%  { transform: translate(7px, 2px);   clip-path: inset(25% 0 48% 0); }
+  100% { transform: translate(-6px, -3px); clip-path: inset(55% 0 30% 0); }
+}
+
+@keyframes burstB {
+  0%   { transform: translate(7px, -3px);  clip-path: inset(58% 0 14% 0); }
+  25%  { transform: translate(-5px, 2px);  clip-path: inset(12% 0 72% 0); }
+  50%  { transform: translate(5px, 3px);   clip-path: inset(80% 0 2% 0); }
+  75%  { transform: translate(-7px, -1px); clip-path: inset(35% 0 38% 0); }
+  100% { transform: translate(4px, 2px);   clip-path: inset(5% 0 78% 0); }
+}
+
+/* -------------------------------------------------------- buttons */
+
+.gbtn {
+  display: inline-block;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--fg);
+  padding: 13px 26px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  /* clipped corners — game UI chrome */
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  transition: color .2s, background .25s, box-shadow .25s, transform .2s var(--ease);
+}
+
+/* Magnetic: JS feeds --magx/--magy while the pointer is near, zeroed on
+   leave. The bouncy timing does the spring-back. */
+.gbtn {
+  transform: translate3d(var(--magx, 0px), var(--magy, 0px), 0);
+  transition: color .2s, background .25s, box-shadow .25s,
+              transform .45s cubic-bezier(.2, .9, .25, 1.35);
+}
+
+.gbtn:hover { color: var(--cyan); box-shadow: 0 0 24px -6px var(--cyan); }
+
+.gbtn--hot {
+  background: linear-gradient(120deg, var(--pink), var(--violet));
+  color: #fff;
+  border-color: transparent;
+}
+.gbtn--hot:hover { color: #fff; box-shadow: 0 0 34px -6px var(--pink); }
+
+.gbtn--lg { padding: 17px 38px; font-size: 15px; }
+
+/* ------------------------------------------------------- sections */
+
+.sec {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(90px, 14vh, 170px) var(--pad);
+}
+
+.sec__eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-bottom: 14px;
+}
+
+.sec__h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(26px, 4vw, 52px);
+  font-weight: 800;
+  letter-spacing: .02em;
+  line-height: 1.1;
+  margin-bottom: 44px;
+  min-height: 1.1em;      /* scramble swaps glyphs; hold the line box */
+}
+
+/* ---------------------------------------------------------- story */
+
+.story { display: grid; gap: 26px; max-width: 62ch; }
+.story p { font-size: clamp(17px, 1.8vw, 21px); color: var(--muted); line-height: 1.75; }
+.story p::first-letter { color: var(--cyan); }
+
+/* ============================================================
+   zones — pinned chapter switcher
+   ============================================================ */
+
+.zones { height: 320vh; }
+
+.zones__sticky {
+  position: sticky;
+  top: var(--nav-h);
+  height: calc(100vh - var(--nav-h));
+  display: grid;
+  grid-template-rows: auto 1fr;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(26px, 4vh, 50px) var(--pad);
+  overflow: hidden;
+}
+
+.zones__head .sec__h2 { margin-bottom: 0; }
+
+.zones__stage { position: relative; margin-top: clamp(18px, 3vh, 36px); }
+
+.zone {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: clamp(20px, 3vw, 44px);
+  align-items: center;
+  opacity: 0;
+  transform: translateX(6%) scale(.98);
+  transition: opacity .55s var(--ease), transform .55s var(--ease);
+  pointer-events: none;
+}
+
+.zones__stage[data-active="0"] .zone:nth-of-type(1),
+.zones__stage[data-active="1"] .zone:nth-of-type(2),
+.zones__stage[data-active="2"] .zone:nth-of-type(3) {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* the sector just left slides out the other side */
+.zones__stage[data-active="1"] .zone:nth-of-type(1),
+.zones__stage[data-active="2"] .zone:nth-of-type(2) {
+  transform: translateX(-6%) scale(.98);
+}
+
+.zone__art {
+  height: clamp(220px, 46vh, 460px);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Sector plates: pure CSS scenery, one palette per altitude. */
+.zone__art--foothills {
+  background:
+    linear-gradient(180deg, transparent 40%, rgba(0, 240, 255, .16) 100%),
+    repeating-linear-gradient(90deg, rgba(0, 240, 255, .12) 0 1px, transparent 1px 44px),
+    repeating-linear-gradient(0deg,  rgba(0, 240, 255, .12) 0 1px, transparent 1px 44px),
+    linear-gradient(180deg, #0b0620 0%, #071d29 100%);
+}
+
+.zone__art--shear {
+  background:
+    linear-gradient(104deg, transparent 46%, rgba(139, 92, 255, .34) 47%, rgba(139, 92, 255, .06) 53%, transparent 54%),
+    linear-gradient(76deg,  transparent 60%, rgba(255, 46, 196, .3) 61%, rgba(255, 46, 196, .05) 68%, transparent 69%),
+    repeating-linear-gradient(104deg, rgba(139, 92, 255, .13) 0 2px, transparent 2px 26px),
+    linear-gradient(180deg, #0d0524 0%, #1b0a33 100%);
+}
+
+.zone__art--summit {
+  background:
+    radial-gradient(46% 34% at 50% 30%, rgba(255, 46, 196, .5) 0%, transparent 70%),
+    repeating-radial-gradient(circle at 50% 30%, rgba(0, 240, 255, .14) 0 1px, transparent 1px 30px),
+    linear-gradient(180deg, #150629 0%, #060213 100%);
+}
+
+.zone__idx {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.zone__body h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(24px, 3vw, 40px);
+  font-weight: 800;
+  margin: 10px 0 14px;
+}
+
+.zone__body > p { color: var(--muted); font-size: clamp(15px, 1.6vw, 18px); max-width: 44ch; }
+
+.zone__facts { list-style: none; display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+
+.zone__facts li {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  padding: 5px 11px;
+  border-radius: 3px;
+  /* fill sweeps in from the left on hover */
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--cyan) 18%, transparent),
+    color-mix(in srgb, var(--cyan) 18%, transparent)) no-repeat 0 0 / 0% 100%;
+  transition: background-size .35s var(--ease), color .3s, border-color .3s;
+}
+
+.zone__facts li:hover {
+  background-size: 100% 100%;
+  color: var(--fg);
+  border-color: color-mix(in srgb, var(--cyan) 50%, transparent);
+}
+
+.zones__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  background: rgba(126, 87, 255, .18);
+}
+
+.zones__bar i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--cyan), var(--pink));
+  box-shadow: 0 0 12px var(--pink);
+}
+
+/* ============================================================
+   classes — cursor-tilt cards
+   ============================================================ */
+
+.team {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 22px;
+  perspective: 1100px;     /* shared space so the cards tilt together */
+}
+
+.tcard { transform-style: preserve-3d; }
+
+.tcard__inner {
+  --rx: 0deg;
+  --ry: 0deg;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform .18s ease-out, box-shadow .3s;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 22px;
+  display: grid;
+  gap: 12px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.tcard:hover .tcard__inner { box-shadow: 0 26px 60px -24px color-mix(in srgb, var(--violet) 55%, transparent); }
+
+.tcard__art {
+  position: relative;
+  overflow: hidden;
+  height: 190px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  /* pops off the card plane when tilted — this is the "3D" the eye reads */
+  transform: translateZ(34px);
+}
+
+/* Glare that tracks the pointer across the art while the card tilts —
+   the highlight moving against the tilt is what sells it as a surface. */
+.tcard__glare {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(160px circle at var(--gx, -300px) var(--gy, -300px),
+              rgba(255, 255, 255, .22), transparent 65%);
+  opacity: 0;
+  transition: opacity .25s;
+  pointer-events: none;
+}
+
+.tcard:hover .tcard__glare { opacity: 1; }
+
+.tcard__art--scout   { background: radial-gradient(70% 90% at 30% 20%, rgba(0,240,255,.4), transparent 65%),
+                                    linear-gradient(160deg, #0a1c2c, #071223); }
+.tcard__art--anchor  { background: radial-gradient(70% 90% at 70% 25%, rgba(139,92,255,.42), transparent 65%),
+                                    linear-gradient(160deg, #171034, #0c0722); }
+.tcard__art--phantom { background: radial-gradient(70% 90% at 50% 15%, rgba(255,46,196,.36), transparent 65%),
+                                    linear-gradient(160deg, #240a2b, #120518); }
+
+.tcard h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  transform: translateZ(26px);
+}
+
+.tcard p { color: var(--muted); font-size: 15px; transform: translateZ(20px); }
+
+.stats { list-style: none; display: grid; gap: 8px; transform: translateZ(16px); }
+.stats li { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center;
+            font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+.bar { height: 5px; background: rgba(126, 87, 255, .16); border-radius: 3px; overflow: hidden; }
+
+/* Bar length rides the card's own arrival: charging up as it lands. */
+.bar i {
+  display: block;
+  height: 100%;
+  width: calc(var(--v) * var(--t, 1) * 1%);
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  box-shadow: 0 0 8px var(--cyan);
+}
+
+/* --------------------------------------------------------- ribbon */
+
+.ribbon {
+  transform: rotate(-2.5deg);
+  margin: 20px -4vw;
+  border-block: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  overflow: hidden;
+}
+
+.ribbon__track {
+  display: flex;
+  gap: 38px;
+  width: max-content;
+  padding: 13px 0;
+  animation: ribbon 26s linear infinite;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--cyan) 50%, transparent);
+  white-space: nowrap;
+}
+
+@keyframes ribbon { to { transform: translateX(-50%); } }
+
+/* catchable: the ribbon slows to a stop under the pointer */
+.ribbon:hover .ribbon__track { animation-play-state: paused; }
+
+/* -------------------------------------------------------- features */
+
+.feats {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  perspective: 900px;      /* the tiltin fly-ins hinge inside this space */
+}
+
+.feats li {
+  position: relative;
+  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 22px;
+  display: grid;
+  gap: 8px;
+  transition: border-color .25s, box-shadow .25s;
+}
+
+.feats li:hover { border-color: color-mix(in srgb, var(--cyan) 45%, transparent);
+                  box-shadow: 0 0 30px -14px var(--cyan); }
+
+/* Spotlight that rides the cursor inside the card. --mx/--my come from JS;
+   the -400px default parks it far outside until the pointer arrives. */
+.feats li::after,
+.ed::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(190px circle at var(--mx, -400px) var(--my, -400px),
+              rgba(0, 240, 255, .13), transparent 70%);
+  opacity: 0;
+  transition: opacity .3s;
+  pointer-events: none;
+}
+
+.feats li:hover::after,
+.ed:hover::after { opacity: 1; }
+
+.feats b {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 15px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.feats p { color: var(--muted); font-size: 14.5px; }
+
+/* ----------------------------------------------------------- stats */
+
+.gstats { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 30px; }
+.gstats li { border-top: 1px solid var(--line); padding-top: 20px; display: grid; gap: 6px; }
+
+.gstats b {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(34px, 4.4vw, 58px);
+  font-weight: 900;
+  letter-spacing: -.01em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(120deg, var(--cyan), var(--violet) 60%, var(--pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gstats span { color: var(--muted); font-size: 14px; }
+
+/* -------------------------------------------------------- editions */
+
+.eds {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* No overflow:hidden here — the "Most climbed" flag hangs above the card
+   edge and would be clipped. The spotlight ::after clips itself via
+   border-radius: inherit instead. */
+.ed {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 30px 26px;
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: border-color .3s, box-shadow .3s;
+}
+
+.ed:hover { border-color: color-mix(in srgb, var(--violet) 55%, transparent);
+            box-shadow: 0 18px 50px -22px var(--violet); }
+.ed__price { transition: color .3s, text-shadow .3s; }
+.ed:hover .ed__price { color: var(--pink); text-shadow: 0 0 18px color-mix(in srgb, var(--pink) 55%, transparent); }
+
+.ed h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.ed__price { font-family: 'Orbitron', sans-serif; font-size: 30px; font-weight: 900; color: var(--cyan); }
+
+.ed ul { list-style: none; display: grid; gap: 9px; color: var(--muted); font-size: 15px; }
+.ed li::before { content: '» '; color: var(--violet); }
+
+.ed .gbtn { justify-self: start; margin-top: 8px; }
+
+/* Featured edition: rotating conic border. --ang is a registered custom
+   property, so the angle itself animates — not a hue trick. */
+.ed--feat {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--panel), var(--panel)) padding-box,
+    conic-gradient(from var(--ang), var(--cyan), var(--pink), var(--violet), var(--cyan)) border-box;
+  animation: edspin 5s linear infinite;
+  box-shadow: 0 0 50px -18px var(--violet);
+}
+
+@keyframes edspin { to { --ang: 360deg; } }
+
+.ed__flag {
+  position: absolute;
+  top: -12px;
+  left: 24px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(120deg, var(--pink), var(--violet));
+  padding: 4px 12px;
+  border-radius: 3px;
+}
+
+/* ------------------------------------------------------------- cta */
+
+.cta {
+  text-align: center;
+  padding: clamp(110px, 18vh, 200px) var(--pad);
+  display: grid;
+  justify-items: center;
+  gap: 34px;
+}
+
+.cta__h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(28px, 5.4vw, 72px);
+  font-weight: 900;
+  letter-spacing: .05em;
+  line-height: 1.12;
+  text-shadow: 0 0 30px color-mix(in srgb, var(--violet) 60%, transparent);
+}
+
+/* ---------------------------------------------------------- footer */
+
+.foot {
+  border-top: 1px solid var(--line);
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 30px var(--pad);
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.foot a { color: var(--cyan); text-decoration: none; }
+.foot a:hover { text-shadow: 0 0 12px color-mix(in srgb, var(--cyan) 60%, transparent); }
+
+/* --------------------------------------------------- small screens */
+
+@media (max-width: 900px) {
+  .nav__links, .nav__badge { display: none; }
+  .rail { display: none; }
+  .zone { grid-template-columns: 1fr; align-content: start; gap: 16px; }
+  .zone__art { height: clamp(160px, 30vh, 260px); }
+  /* Big-viewport throws read as off-screen teleports on a phone; keep the
+     directions but shrink every flight to arm's length. */
+  .js [data-fly="left"]  { transform: translate3d(calc((var(--t) - 1) * 70px), 0, 0) rotateY(calc((1 - var(--t)) * 30deg)); }
+  .js [data-fly="right"] { transform: translate3d(calc((1 - var(--t)) * 70px), 0, 0) rotateY(calc((var(--t) - 1) * 30deg)); }
+  .js [data-fly="up"]    { transform: translate3d(0, calc((1 - var(--t)) * 70px), 0); }
+  .js [data-fly="down"]  { transform: translate3d(0, calc((var(--t) - 1) * 70px), 0); }
+  .js [data-fly="tl"]    { transform: translate3d(calc((var(--t) - 1) * 55px), calc((var(--t) - 1) * 55px), 0); }
+  .js [data-fly="tr"]    { transform: translate3d(calc((1 - var(--t)) * 55px), calc((var(--t) - 1) * 55px), 0); }
+  .js [data-fly="bl"]    { transform: translate3d(calc((var(--t) - 1) * 55px), calc((1 - var(--t)) * 55px), 0); }
+  .js [data-fly="br"]    { transform: translate3d(calc((1 - var(--t)) * 55px), calc((1 - var(--t)) * 55px), 0); }
+}
+
+/* -------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js [data-fly] { --t: 1; opacity: 1; transform: none; filter: none; }
+  .glitch::before, .glitch::after { animation: none; clip-path: inset(0 0 100% 0); }
+  .hero__cue i, .ribbon__track, .ed--feat { animation: none; }
+  .zone { transition: none; }
+  .tcard__inner { transform: none !important; }
+  /* the interactive layer (cursor, magnetic, glare, burst) is never built
+     by JS under reduced motion; these cover the pure-CSS leftovers */
+  .nav__links a::after { transition: none; }
+  .zone__facts li { transition: none; }
+}
+
+
+/* ============================================================
+   Z-MODE — scroll flies forward, not down
+   ------------------------------------------------------------
+   JS adds .zmode on capable setups (fine pointer, full motion,
+   desktop width). The stage pins to the viewport, every section
+   becomes a full-screen slide positioned in real Z, and scroll
+   drives the camera: the front slide flies past your head while
+   the next one surfaces from behind it. Without .zmode all of
+   this is inert and the page stays a normal vertical document.
+   ============================================================ */
+
+.zmode { overflow-x: clip; }
+
+.zmode main {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  perspective: 1200px;
+  perspective-origin: 50% 46%;
+}
+
+.zmode main.is-shake { animation: shake .18s linear; }
+
+@keyframes shake {
+  25% { transform: translate(1.5px, -1px); }
+  50% { transform: translate(-1.5px, 1px); }
+  75% { transform: translate(1px, 1.5px); }
+}
+
+.zmode main > section {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: none;
+  margin: 0;
+  padding: calc(var(--nav-h) + 2vh) 7vw 4vh;
+  overflow: hidden;
+  /* JS writes --sz (translateZ px) and --so (opacity) every frame */
+  transform: translateZ(calc(var(--sz, 0) * 1px));
+  opacity: var(--so, 1);
+  visibility: var(--sv, visible);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.zmode main > section.is-front { pointer-events: auto; }
+
+/* No backdrop plate on slides — the canyon must stay visible through the
+   whole stack (a full-section plate walls it off). Legibility comes from
+   dark text halos instead, and the fixed .vignette already dims the edges. */
+.zmode .sec__h2,
+.zmode .sec__eyebrow,
+.zmode .story p,
+.zmode .zone__body > p,
+.zmode .zone__body h3,
+.zmode .gstats span,
+.zmode .hero__tag,
+.zmode .access__sub,
+.zmode .cta__h2 {
+  text-shadow:
+    0 1px 3px  rgba(4, 1, 12, .95),
+    0 0 14px   rgba(4, 1, 12, .8),
+    0 0 34px   rgba(4, 1, 12, .6);
+}
+
+/* vertical-layout numbers that have no meaning in a slide deck */
+.zmode .hero { min-height: 0; gap: 16px; }
+.zmode .sec { max-width: none; }
+.zmode .sec__h2 { margin-bottom: 26px; }
+.zmode .zones { height: auto; }
+.zmode .zones__sticky { position: static; height: 100%; max-width: none; padding: 0; }
+.zmode .cta { padding: 0 7vw; }
+.zmode .sec > .story,
+.zmode .sec > .cards,
+.zmode .sec > .team,
+.zmode .sec > .feats,
+.zmode .sec > .gstats,
+.zmode .sec > .eds { max-width: 1180px; width: 100%; margin-inline: auto; }
+.zmode .sec > .sec__eyebrow,
+.zmode .sec > .sec__h2 { max-width: 1180px; width: 100%; margin-inline: auto; }
+.zmode .sec__h2 { margin-bottom: 26px; }
+.zmode .story { gap: 16px; }
+.zmode .story p { font-size: clamp(15px, 1.5vw, 19px); line-height: 1.6; }
+
+.zmode .ribbon {
+  position: absolute;
+  top: calc(var(--nav-h) - 10px);
+  left: -6vw;
+  right: -6vw;
+  margin: 0;
+}
+
+.zmode .cta .foot {
+  position: absolute;
+  left: 7vw;
+  right: 7vw;
+  bottom: 3vh;
+  border-top: 1px solid var(--line);
+  padding: 18px 0 0;
+  max-width: none;
+}
+
+/* the spacer is the document's only height in Z-mode */
+#zspacer { width: 1px; pointer-events: none; }
+
+/* ============================================================
+   click FX — every click lands like a hit
+   ============================================================ */
+
+.fx {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 190;
+  pointer-events: none;
+}
+
+.fx__ring {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--cyan);
+  transform: translate(-50%, -50%) scale(.4);
+  animation: fxring .5s cubic-bezier(.16, .8, .3, 1) forwards;
+}
+
+@keyframes fxring {
+  60%  { border-color: var(--pink); }
+  100% { transform: translate(-50%, -50%) scale(5.2); border-color: transparent; }
+}
+
+.fx__spark {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: var(--cyan);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 8px var(--cyan);
+  /* --dx/--dy: flight vector, randomised per spark by JS */
+  animation: fxspark .55s cubic-bezier(.1, .7, .3, 1) forwards;
+}
+
+.fx__spark:nth-child(even) { background: var(--pink); box-shadow: 0 0 8px var(--pink); }
+
+@keyframes fxspark {
+  to {
+    transform: translate(calc(-50% + var(--dx) * 1px), calc(-50% + var(--dy) * 1px))
+               scale(.2) rotate(200deg);
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   cursor skins — original neon takes on game-weapon archetypes
+   ============================================================ */
+
+.cur .skin { display: none; }
+.cur[data-skin="reticle"] .cur__ring,
+.cur[data-skin="reticle"] .cur__dot { display: block; }
+.cur:not([data-skin="reticle"]) .cur__ring,
+.cur:not([data-skin="reticle"]) .cur__dot { display: none; }
+
+.cur[data-skin="hammer"]   .skin--hammer,
+.cur[data-skin="blade"]    .skin--blade,
+.cur[data-skin="gauntlet"] .skin--gauntlet { display: block; }
+
+.cur .skin {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--cyan) 60%, transparent));
+  transition: scale .18s var(--ease);
+}
+
+/* hotspot per skin: the business end sits on the pointer */
+.cur .skin--hammer   { transform: translate(-31px, -10px); transform-origin: 31px 10px; }
+.cur .skin--blade    { transform: translate(-7px, -7px);   transform-origin: 7px 7px; }
+.cur .skin--gauntlet { transform: translate(-22px, -22px); transform-origin: 22px 22px; }
+
+.cur.is-hot .skin { scale: 1.18; filter: drop-shadow(0 0 12px color-mix(in srgb, var(--pink) 75%, transparent)); }
+
+/* strike animations, one per archetype */
+.cur.is-strike .skin--hammer   { animation: hswing .3s var(--ease); }
+.cur.is-strike .skin--blade    { animation: bslash .26s var(--ease); }
+.cur.is-strike .skin--gauntlet { animation: gblast .3s var(--ease); }
+
+@keyframes hswing {
+  35%  { rotate: -68deg; }
+  100% { rotate: 0deg; }
+}
+
+@keyframes bslash {
+  40%  { translate: -10px 12px; rotate: -38deg; }
+  100% { translate: 0 0; rotate: 0deg; }
+}
+
+@keyframes gblast {
+  40%  { scale: 1.35; filter: drop-shadow(0 0 20px var(--cyan)); }
+  100% { scale: 1; }
+}
+
+/* ---- picker chips, bottom-left ---- */
+
+.curpick {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 180;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.curpick__label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-right: 3px;
+}
+
+.curpick button {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  padding: 5px;
+  transition: border-color .2s, box-shadow .2s, transform .2s var(--ease);
+}
+
+.curpick button:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--cyan) 55%, transparent); }
+.curpick button.is-active { border-color: var(--pink); box-shadow: 0 0 12px -3px var(--pink); }
+.curpick svg { width: 100%; height: 100%; }
+
+@media (max-width: 900px) { .curpick { display: none; } }
