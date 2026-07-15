@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kunnam Pro Max</title>
+<meta name="description" content="Kunnam Pro Max — forged from a single block of aluminium.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+
+<!-- ============================ nav ============================ -->
+<header class="nav">
+  <div class="nav__inner">
+    <a class="nav__home" href="../index.html" aria-label="DIAZ home">
+      <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M20 4.5c0 0-9.4 11-9.4 17.4a9.4 9.4 0 0 0 18.8 0C29.4 15.5 20 4.5 20 4.5Z" fill="currentColor"/>
+      </svg>
+    </a>
+    <nav class="nav__links" aria-label="Section">
+      <a href="#design">Design</a>
+      <a href="#camera">Camera</a>
+      <a href="#chip">Chip</a>
+      <a href="#battery">Battery</a>
+      <a href="#specs">Specs</a>
+    </nav>
+    <a class="nav__buy" href="#specs">Buy</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ====================== hero (pinned) ======================= -->
+  <!-- 300vh of scroll drives --p from 0 to 1 across the sticky frame. -->
+  <section class="hero" data-scene>
+    <div class="hero__sticky">
+      <div class="hero__type">
+        <p class="hero__eyebrow">Kunnam</p>
+        <h1 class="hero__title">Pro Max</h1>
+        <p class="hero__tag">Built like nothing else.</p>
+      </div>
+
+      <!-- Front of the device. Scales and lifts as the hero scrubs. -->
+      <div class="stage stage--hero">
+        <div class="phone phone--front">
+          <div class="phone__frame">
+            <div class="phone__screen">
+              <div class="phone__island"></div>
+              <div class="phone__glow"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__cue" aria-hidden="true">
+        <span>Scroll</span>
+        <i></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ statement — words light up on scroll =========== -->
+  <section class="statement" data-scene>
+    <div class="statement__sticky">
+      <p class="statement__text" data-reveal-text>
+        Forged from a single block of aerospace aluminium, cooled by a
+        laser-welded vapour chamber, and driven by the fastest silicon
+        we have ever built.
+      </p>
+    </div>
+  </section>
+
+  <!-- ====================== highlights ========================== -->
+  <section class="section highlights">
+    <h2 class="section__title" data-reveal>Get the highlights</h2>
+    <ul class="highlights__grid">
+      <li class="card" data-reveal style="--d:0">
+        <span class="card__kicker">Design</span>
+        <p class="card__copy">Heat-forged aluminium unibody. <em>Lighter. Stiffer. Cooler.</em></p>
+      </li>
+      <li class="card" data-reveal style="--d:1">
+        <span class="card__kicker">K1 Ultra</span>
+        <p class="card__copy">Our fastest chip ever. <em>6-core CPU. 8-core GPU.</em></p>
+      </li>
+      <li class="card" data-reveal style="--d:2">
+        <span class="card__kicker">Camera</span>
+        <p class="card__copy">Triple 48MP Fusion system with <em>10x optical zoom.</em></p>
+      </li>
+      <li class="card" data-reveal style="--d:3">
+        <span class="card__kicker">Battery</span>
+        <p class="card__copy">Up to <em>40 hours</em> of video playback.</p>
+      </li>
+      <li class="card" data-reveal style="--d:4">
+        <span class="card__kicker">Display</span>
+        <p class="card__copy">6.9″ Infinity XDR with <em>ProMotion 120Hz.</em></p>
+      </li>
+      <li class="card" data-reveal style="--d:5">
+        <span class="card__kicker">Ceramic Guard</span>
+        <p class="card__copy">4x more crack resistant. <em>Front and back.</em></p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ================= design + colour switcher ================== -->
+  <section class="section design" id="design">
+    <h2 class="section__title section__title--lead" data-reveal>
+      Unibody enclosure.<br><span class="dim">Makes a strong case for itself.</span>
+    </h2>
+
+    <div class="design__stage">
+      <!-- Back of the device. --shell / --shell-2 are set by the switcher. -->
+      <div class="stage stage--design" data-reveal>
+        <div class="phone phone--back" id="phoneBack">
+          <div class="phone__frame">
+            <div class="phone__shell"></div>
+            <div class="phone__plateau">
+              <span class="lens"><i></i></span>
+              <span class="lens"><i></i></span>
+              <span class="lens"><i></i></span>
+              <span class="flash"></span>
+            </div>
+            <!-- Mountain rock mark: a boulder sliding out of the face.
+                 The track is CUT from the mountain (a mask), not drawn beside
+                 it — a slide leaves a scar, and a stroke floating next to the
+                 slope just reads as a stray mark. The rock straddles the slope
+                 edge at the end of that scar, with a gap ring around it so it
+                 separates from the face behind it. -->
+            <svg class="phone__logo" viewBox="0 0 52 50" fill="none" aria-hidden="true">
+              <defs>
+                <mask id="rockSlide" maskUnits="userSpaceOnUse" x="0" y="0" width="52" height="50">
+                  <rect x="0" y="0" width="52" height="50" fill="#fff"/>
+                  <!-- The scar. r matches the rock exactly, so the bite in the
+                       ridge reads as the very chunk that broke away. Kept at 5,
+                       not 6 — a larger bite cuts clean through the ridge and
+                       leaves the peak as a detached spike. -->
+                  <circle cx="30.8" cy="20.8" r="5" fill="#000"/>
+                  <!-- Gap so the rock separates from the face behind it, which
+                       is the only thing keeping white-on-white readable. -->
+                  <circle cx="39.5" cy="30.9" r="6.8" fill="#000"/>
+                </mask>
+              </defs>
+
+              <g mask="url(#rockSlide)">
+                <path class="logo__face-dark" d="M22 4 L22 46 L2 46 Z"/>
+                <path class="logo__face-lit"  d="M22 4 L44 46 L22 46 Z"/>
+              </g>
+
+              <!-- that same chunk, now sliding away below its own scar -->
+              <circle class="logo__rock" cx="39.5" cy="30.9" r="5"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="switcher" data-reveal>
+        <p class="switcher__label" id="colorName">Ember Orange</p>
+        <div class="switcher__dots" role="radiogroup" aria-label="Finish">
+          <button class="dot is-active" role="radio" aria-checked="true"
+                  data-name="Ember Orange" data-a="#c8541f" data-b="#f0995e"></button>
+          <button class="dot" role="radio" aria-checked="false"
+                  data-name="Abyss Blue" data-a="#1e3a5c" data-b="#4d7ba8"></button>
+          <button class="dot" role="radio" aria-checked="false"
+                  data-name="Titan Silver" data-a="#8e9095" data-b="#dfe1e4"></button>
+          <button class="dot" role="radio" aria-checked="false"
+                  data-name="Graphite" data-a="#2b2b2e" data-b="#5f6064"></button>
+        </div>
+      </div>
+    </div>
+
+    <ul class="facts">
+      <li data-reveal style="--d:0"><strong>Aerospace aluminium</strong><span>Heat-forged from one block, so there are no seams to flex.</span></li>
+      <li data-reveal style="--d:1"><strong>Vapour chamber</strong><span>Laser-welded and filled with deionised water to move heat out fast.</span></li>
+      <li data-reveal style="--d:2"><strong>Ceramic Guard</strong><span>4x more crack resistant on the back, 3x more scratch resistant up front.</span></li>
+    </ul>
+  </section>
+
+  <!-- ================== camera + zoom switcher =================== -->
+  <section class="section camera" id="camera">
+    <h2 class="section__title section__title--lead" data-reveal>
+      A big zoom forward.
+    </h2>
+
+    <!-- The "focal length" viewer: the frame crops as the zoom goes up. -->
+    <div class="zoom" data-reveal>
+      <div class="zoom__frame">
+        <!-- A scene with actual depth: zooming an abstract blob just makes a
+             bigger blob, so there are ridges and a subject to magnify into. -->
+        <div class="zoom__scene" id="zoomScene">
+          <span class="zoom__sun"></span>
+          <span class="zoom__subject"></span>
+          <span class="zoom__ridge zoom__ridge--far"></span>
+          <span class="zoom__ridge zoom__ridge--mid"></span>
+          <span class="zoom__ridge zoom__ridge--near"></span>
+          <span class="zoom__birds"></span>
+        </div>
+        <span class="zoom__badge" id="zoomBadge">1x</span>
+      </div>
+      <div class="zoom__controls" role="radiogroup" aria-label="Focal length">
+        <button class="zoom__btn" role="radio" aria-checked="false" data-z="0.5" data-mm="13 mm">.5x</button>
+        <button class="zoom__btn is-active" role="radio" aria-checked="true" data-z="1" data-mm="24 mm">1x</button>
+        <button class="zoom__btn" role="radio" aria-checked="false" data-z="2" data-mm="48 mm">2x</button>
+        <button class="zoom__btn" role="radio" aria-checked="false" data-z="5" data-mm="120 mm">5x</button>
+        <button class="zoom__btn" role="radio" aria-checked="false" data-z="10" data-mm="240 mm">10x</button>
+      </div>
+      <p class="zoom__mm" id="zoomMm">24 mm · Fusion Main</p>
+    </div>
+
+    <ul class="facts">
+      <li data-reveal style="--d:0"><strong>48MP Fusion Main</strong><span>24 mm and 48 mm, full resolution, no crop.</span></li>
+      <li data-reveal style="--d:1"><strong>48MP Ultra Wide</strong><span>13 mm for the shot you have to step back for.</span></li>
+      <li data-reveal style="--d:2"><strong>48MP Telephoto</strong><span>Up to 240 mm at 10x optical-quality zoom.</span></li>
+    </ul>
+  </section>
+
+  <!-- ================== chip — counters on view ================== -->
+  <section class="section chip" id="chip">
+    <h2 class="section__title section__title--lead" data-reveal>
+      New dimensions in power.
+    </h2>
+
+    <div class="chip__art" data-reveal>
+      <div class="die">
+        <span class="die__core"></span>
+        <span class="die__label">K1 Ultra</span>
+      </div>
+    </div>
+
+    <ul class="stats">
+      <li data-reveal style="--d:0"><b data-count="6" data-suffix="">0</b><span>core CPU</span></li>
+      <li data-reveal style="--d:1"><b data-count="8" data-suffix="">0</b><span>core GPU</span></li>
+      <li data-reveal style="--d:2"><b data-count="40" data-suffix="%">0</b><span>better sustained performance</span></li>
+      <li data-reveal style="--d:3"><b data-count="16" data-suffix="-core">0</b><span>Neural Engine</span></li>
+    </ul>
+  </section>
+
+  <!-- ===================== battery (pinned) ===================== -->
+  <section class="section battery" id="battery" data-scene>
+    <div class="battery__sticky">
+      <h2 class="section__title section__title--lead">Battery life. All-time high.</h2>
+      <!-- The cell fills in step with --p, so scrolling *is* the charge. -->
+      <div class="cell">
+        <div class="cell__fill"></div>
+        <span class="cell__cap"></span>
+      </div>
+      <p class="battery__read"><b id="batteryHours">0</b> hours of video playback</p>
+      <p class="battery__sub">Up to 50% charge in 20 minutes with a high-wattage adapter.</p>
+    </div>
+  </section>
+
+  <!-- ============= horizontal gallery (pinned scrub) ============= -->
+  <section class="gallery" data-scene>
+    <div class="gallery__sticky">
+      <!-- Every slide's artwork is CSS, not photography. -->
+      <div class="gallery__track" id="galleryTrack">
+
+        <article class="slide">
+          <div class="slide__art art-night" aria-hidden="true">
+            <span class="art-night__stars"></span>
+            <span class="art-night__moon"></span>
+            <span class="art-night__ridge"></span>
+            <span class="art-night__lake"></span>
+          </div>
+          <h3 class="slide__title">Night mode</h3>
+          <p>Ten seconds of hand-held exposure, stacked and aligned.</p>
+        </article>
+
+        <article class="slide">
+          <div class="slide__art art-detail" aria-hidden="true">
+            <span class="art-detail__grain"></span>
+            <span class="art-detail__crop"></span>
+            <span class="art-detail__inset"></span>
+          </div>
+          <h3 class="slide__title">48MP detail</h3>
+          <p>Full-resolution files with room to crop after the fact.</p>
+        </article>
+
+        <article class="slide">
+          <!-- One continuous scene; the three bands are grading windows over
+               it, so it reads as one photo in three looks. -->
+          <div class="slide__art art-styles" aria-hidden="true">
+            <span class="art-styles__sun"></span>
+            <span class="art-styles__ridge"></span>
+            <span class="art-styles__band art-styles__band--a"></span>
+            <span class="art-styles__band art-styles__band--b"></span>
+            <span class="art-styles__band art-styles__band--c"></span>
+          </div>
+          <h3 class="slide__title">Photographic Styles</h3>
+          <p>Grade the look before you press the shutter, not after.</p>
+        </article>
+
+        <article class="slide">
+          <div class="slide__art art-action" aria-hidden="true">
+            <span class="art-action__streaks"></span>
+            <span class="art-action__subject"></span>
+          </div>
+          <h3 class="slide__title">Action mode</h3>
+          <p>Ultra-stabilised video that survives a running start.</p>
+        </article>
+
+        <article class="slide">
+          <div class="slide__art art-raw" aria-hidden="true">
+            <span class="art-raw__frames"></span>
+            <span class="art-raw__scope"></span>
+            <span class="art-raw__badge">4K · 120</span>
+          </div>
+          <h3 class="slide__title">ProRes RAW</h3>
+          <p>4K 120 fps Dolby Vision straight to external storage.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================== specs =========================== -->
+  <section class="section specs" id="specs">
+    <h2 class="section__title" data-reveal>Tech specs</h2>
+    <dl class="specs__list">
+      <div data-reveal style="--d:0"><dt>Display</dt><dd>17.42 cm (6.9″) Infinity XDR, ProMotion up to 120Hz, 2000 nits peak</dd></div>
+      <div data-reveal style="--d:1"><dt>Chip</dt><dd>K1 Ultra — 6-core CPU, 8-core GPU, 16-core Neural Engine</dd></div>
+      <div data-reveal style="--d:2"><dt>Camera</dt><dd>48MP Fusion Main · 48MP Ultra Wide · 48MP Telephoto, 10x optical-quality zoom</dd></div>
+      <div data-reveal style="--d:3"><dt>Front camera</dt><dd>18MP Centre Stage, Dual Capture</dd></div>
+      <div data-reveal style="--d:4"><dt>Battery</dt><dd>Up to 40 hours video playback, 50% in 20 minutes</dd></div>
+      <div data-reveal style="--d:5"><dt>Enclosure</dt><dd>Heat-forged aluminium unibody, Ceramic Guard front and back</dd></div>
+      <div data-reveal style="--d:6"><dt>Finishes</dt><dd>Ember Orange · Abyss Blue · Titan Silver · Graphite</dd></div>
+      <div data-reveal style="--d:7"><dt>Connectivity</dt><dd>5G, Wi-Fi 7, Bluetooth 6, eSIM</dd></div>
+    </dl>
+
+    <div class="cta" data-reveal>
+      <p class="cta__price">From <b>₹1,49,900</b></p>
+      <a class="cta__btn" href="#">Buy Kunnam Pro Max</a>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Kunnam Pro Max is a fictional product built as a landing page study.</p>
+  <a href="../index.html">← Back to DIAZ</a>
+</footer>
+
+<script src="mobile.js"></script>
+</body>
+</html>

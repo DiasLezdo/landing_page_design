@@ -51,7 +51,10 @@ body {
   pointer-events: none;             /* water stays clickable between the links */
 }
 
-.bar--top    { top: 0;    height: 56px; justify-content: space-between; }
+/* The gap is load-bearing: space-between alone lets the nav's last link butt
+   straight into the centred mark once the links are long enough to fill their
+   flex box, and no amount of justify-content prevents it. */
+.bar--top    { top: 0;    height: 56px; justify-content: space-between; gap: 28px; }
 .bar--bottom { bottom: 0; height: 52px; gap: 34px; }
 
 .bar__group {

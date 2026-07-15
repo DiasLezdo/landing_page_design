@@ -670,7 +670,14 @@
       const p = toUv(e);
       impact = { x: p.x, y: p.y, force: CONFIG.CLICK_FORCE * 0.7, radius: CONFIG.CLICK_RADIUS };
     });
-    el.addEventListener('click', e => e.preventDefault());
+
+    // Swallow the click only for placeholder links, so a bare "#" doesn't
+    // jump the page. Real hrefs must navigate — blanket-preventing every
+    // click here silently breaks each section link as it gets wired up.
+    el.addEventListener('click', e => {
+      const href = el.getAttribute('href');
+      if (!href || href === '#') e.preventDefault();
+    });
   });
 
   /* ---------------------------------------------------------------------------
