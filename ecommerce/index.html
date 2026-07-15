@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kunnam Store — from click to couch</title>
+<meta name="description" content="Order the Kunnam Play and scroll the whole journey: packed, shipped by Kunnam Parcel Service, and delivered to the couch.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="shop.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<!-- ============================== nav ============================== -->
+<header class="nav">
+  <a class="nav__brand" href="../index.html" aria-label="Back to DIAZ">
+    <svg viewBox="0 0 52 50" fill="none" aria-hidden="true">
+      <defs>
+        <mask id="navRock" maskUnits="userSpaceOnUse" x="0" y="0" width="52" height="50">
+          <rect width="52" height="50" fill="#fff"/>
+          <circle cx="30.8" cy="20.8" r="5" fill="#000"/>
+          <circle cx="39.5" cy="30.9" r="6.8" fill="#000"/>
+        </mask>
+      </defs>
+      <g mask="url(#navRock)">
+        <path d="M22 4 L22 46 L2 46 Z"  fill="currentColor" opacity=".55"/>
+        <path d="M22 4 L44 46 L22 46 Z" fill="currentColor" opacity=".95"/>
+      </g>
+      <circle cx="39.5" cy="30.9" r="5" fill="currentColor"/>
+    </svg>
+    <b>Kunnam</b><span>store</span>
+  </a>
+
+  <!-- live parcel tracking — fills as the story scrolls -->
+  <ol class="track" id="track" aria-label="Delivery progress">
+    <li data-at="0">Ordered</li>
+    <li data-at="1.7">Packed</li>
+    <li data-at="3.4">In transit</li>
+    <li data-at="4.6">At hub</li>
+    <li data-at="5.8">Out for delivery</li>
+    <li data-at="8.2">Delivered</li>
+  </ol>
+
+  <span class="nav__hint" aria-hidden="true">Scroll to follow your order</span>
+</header>
+
+<main id="stage">
+
+  <!-- ================= C1 · the order ================= -->
+  <section class="scene" id="s-order" data-scene>
+    <p class="chip">01 · You order</p>
+
+    <div class="browser">
+      <div class="browser__bar">
+        <i></i><i></i><i></i>
+        <span class="browser__url">store.kunnam.in/play</span>
+      </div>
+
+      <div class="browser__body">
+        <div class="pdp__art">
+          <div class="console">
+            <span class="console__stripe"></span>
+            <svg class="console__logo" viewBox="0 0 52 50" fill="none" aria-hidden="true">
+              <path d="M22 4 L22 46 L2 46 Z" fill="currentColor" opacity=".55"/>
+              <path d="M22 4 L44 46 L22 46 Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="pad">
+            <i class="pad__stick"></i><i class="pad__stick pad__stick--r"></i>
+          </div>
+        </div>
+
+        <div class="pdp__info">
+          <p class="pdp__kicker">New · Ascent bundle</p>
+          <h1 class="pdp__title">Kunnam Play</h1>
+          <p class="pdp__price">₹44,990</p>
+          <ul class="pdp__specs">
+            <li>1 TB · 120 fps</li>
+            <li>ASCENT — Season 0 included</li>
+            <li>Free delivery by Kunnam Parcel</li>
+          </ul>
+          <div class="pdp__actions">
+            <button class="shopbtn" id="btnCart" type="button">
+              Add to cart <span class="shopbtn__ripple" aria-hidden="true"></span>
+            </button>
+            <button class="shopbtn shopbtn--buy" id="btnBuy" type="button">
+              Buy now <span class="shopbtn__ripple" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="cartpill" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 4h2l2.2 11h11l2-8H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="19.5" r="1.4" fill="currentColor"/><circle cx="16.5" cy="19.5" r="1.4" fill="currentColor"/></svg>
+          <b class="cartpill__n" id="cartN">0</b>
+        </div>
+
+        <div class="toast" aria-hidden="true">
+          <b>Order confirmed</b>
+          <span>#KP-88214 · arriving Thursday</span>
+        </div>
+
+        <!-- the demo hand: a fake cursor that does the shopping -->
+        <div class="ghostcur" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M5 3 L19 12 L12.4 13.6 L15.5 20.3 L12.6 21.6 L9.6 14.8 L5 18 Z" fill="#2e2620" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= C2 · packing ================= -->
+  <section class="scene" id="s-pack" data-scene>
+    <p class="chip">02 · Packed with care</p>
+
+    <div class="packroom">
+      <div class="packroom__shelf" aria-hidden="true"><i></i><i></i><i></i></div>
+
+      <div class="packbench">
+        <div class="console console--packing">
+          <span class="console__stripe"></span>
+        </div>
+
+        <div class="box box--packing">
+          <i class="box__flap box__flap--l"></i>
+          <i class="box__flap box__flap--r"></i>
+          <span class="box__tape"></span>
+          <span class="label">
+            <svg viewBox="0 0 52 50" fill="none" aria-hidden="true">
+              <path d="M22 4 L22 46 L2 46 Z" fill="currentColor" opacity=".55"/>
+              <path d="M22 4 L44 46 L22 46 Z" fill="currentColor"/>
+            </svg>
+            <b>Kunnam<br>Parcel</b>
+          </span>
+        </div>
+      </div>
+
+      <div class="packvan" aria-hidden="true">
+        <div class="packvan__door"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= C3 · the van ================= -->
+  <section class="scene" id="s-van" data-scene>
+    <p class="chip">03 · On the road</p>
+
+    <div class="roadworld">
+      <div class="sky" aria-hidden="true"><i class="cloud c1"></i><i class="cloud c2"></i><i class="cloud c3"></i></div>
+      <div class="hills" aria-hidden="true"></div>
+      <div class="towns" aria-hidden="true"></div>
+
+      <svg class="van" viewBox="0 0 320 150" fill="none" aria-hidden="true">
+        <rect x="8" y="26" width="212" height="86" rx="12" fill="#fdfaf3" stroke="#2e2620" stroke-width="3"/>
+        <path d="M220 44 h44 l30 34 v34 h-74 Z" fill="#fdfaf3" stroke="#2e2620" stroke-width="3"/>
+        <path d="M232 52 h28 l20 24 h-48 Z" fill="#bfe3e8" stroke="#2e2620" stroke-width="3"/>
+        <rect x="8" y="70" width="212" height="22" fill="#e0641f"/>
+        <text x="114" y="86" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="900" font-size="15" fill="#fff" letter-spacing="1">KUNNAM PARCEL SERVICE</text>
+        <g transform="translate(28, 34) scale(0.55)" color="#e0641f">
+          <path d="M22 4 L22 46 L2 46 Z" fill="currentColor" opacity=".55"/>
+          <path d="M22 4 L44 46 L22 46 Z" fill="currentColor"/>
+        </g>
+        <g class="wheel wheel--a"><circle cx="70" cy="116" r="21" fill="#2e2620"/><circle cx="70" cy="116" r="9" fill="#fdfaf3"/><path d="M70 99 V133 M53 116 H87" stroke="#fdfaf3" stroke-width="3"/></g>
+        <g class="wheel wheel--b"><circle cx="242" cy="116" r="21" fill="#2e2620"/><circle cx="242" cy="116" r="9" fill="#fdfaf3"/><path d="M242 99 V133 M225 116 H259" stroke="#fdfaf3" stroke-width="3"/></g>
+      </svg>
+
+      <div class="road" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- ================= C4 · the hub ================= -->
+  <section class="scene" id="s-hub" data-scene>
+    <p class="chip">04 · Sorted at the hub</p>
+
+    <div class="hubworld">
+      <div class="hub">
+        <b class="hub__sign">
+          <svg viewBox="0 0 52 50" fill="none" aria-hidden="true">
+            <path d="M22 4 L22 46 L2 46 Z" fill="currentColor" opacity=".55"/>
+            <path d="M22 4 L44 46 L22 46 Z" fill="currentColor"/>
+          </svg>
+          Kunnam Parcel Hub
+        </b>
+        <i class="hub__door"></i>
+      </div>
+
+      <div class="belt">
+        <div class="belt__strip" aria-hidden="true"></div>
+        <div class="belt__boxes">
+          <span class="minibox"></span>
+          <span class="minibox minibox--ours">
+            <svg viewBox="0 0 52 50" fill="none" aria-hidden="true">
+              <path d="M22 4 L22 46 L2 46 Z" fill="currentColor" opacity=".55"/>
+              <path d="M22 4 L44 46 L22 46 Z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="minibox minibox--tall"></span>
+        </div>
+        <i class="belt__scanner" aria-hidden="true"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= C5 · out for delivery ================= -->
+  <section class="scene" id="s-courier" data-scene>
+    <p class="chip">05 · Out for delivery</p>
+
+    <div class="lane">
+      <div class="lane__homes" aria-hidden="true"></div>
+
+      <svg class="scoot" viewBox="0 0 300 200" fill="none" aria-hidden="true">
+        <!-- scooter -->
+        <g class="wheel"><circle cx="64" cy="158" r="26" fill="#2e2620"/><circle cx="64" cy="158" r="10" fill="#fdfaf3"/><path d="M64 138 V178 M44 158 H84" stroke="#fdfaf3" stroke-width="3"/></g>
+        <g class="wheel"><circle cx="240" cy="158" r="26" fill="#2e2620"/><circle cx="240" cy="158" r="10" fill="#fdfaf3"/><path d="M240 138 V178 M220 158 H260" stroke="#fdfaf3" stroke-width="3"/></g>
+        <path d="M64 158 H128 Q148 158 154 138 L164 104" stroke="#e0641f" stroke-width="11" stroke-linecap="round" fill="none"/>
+        <path d="M212 70 L240 152" stroke="#2e2620" stroke-width="9" stroke-linecap="round"/>
+        <path d="M196 64 L224 58" stroke="#2e2620" stroke-width="9" stroke-linecap="round"/>
+        <!-- front rack with our parcel -->
+        <rect x="168" y="100" width="58" height="14" rx="4" fill="#2e2620"/>
+        <rect class="scoot__box" x="172" y="60" width="50" height="42" rx="4" fill="#c99a5c" stroke="#2e2620" stroke-width="3"/>
+        <rect x="190" y="60" width="12" height="42" fill="#e0641f" opacity=".85"/>
+        <rect x="180" y="72" width="18" height="14" rx="3" fill="#fdfaf3" stroke="#2e2620" stroke-width="2"/>
+        <!-- rider: leg, torso, vest, arm, head with cap -->
+        <path d="M96 108 L128 126 L122 152" stroke="#3d3630" stroke-width="13" stroke-linecap="round" fill="none"/>
+        <rect x="112" y="144" width="26" height="10" rx="5" fill="#2e2620"/>
+        <path d="M92 108 L96 62" stroke="#1f6f54" stroke-width="24" stroke-linecap="round"/>
+        <path d="M92 106 L96 74" stroke="#e0641f" stroke-width="26" stroke-linecap="round"/>
+        <path d="M96 60 a7 7 0 0 1 7 -7" stroke="#fff" stroke-width="3" fill="none" opacity=".7"/>
+        <path d="M102 70 L150 66 L196 64" stroke="#e8b26a" stroke-width="11" stroke-linecap="round" fill="none"/>
+        <circle cx="103" cy="36" r="17" fill="#e8b26a" stroke="#2e2620" stroke-width="3"/>
+        <circle cx="111" cy="36" r="2.6" fill="#2e2620"/>
+        <path d="M109 44 q4 3 8 1" stroke="#2e2620" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+        <path d="M85 32 a18 18 0 0 1 35 -4 l8 2 -6 7 Z" fill="#e0641f" stroke="#2e2620" stroke-width="3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ================= C6 · the brand, full frame ================= -->
+  <section class="scene" id="s-brand" data-scene>
+    <div class="bigparcel">
+      <span class="bigparcel__tape" aria-hidden="true"></span>
+      <div class="biglabel">
+        <svg viewBox="0 0 52 50" fill="none" aria-hidden="true">
+          <defs>
+            <mask id="brandRock2" maskUnits="userSpaceOnUse" x="0" y="0" width="52" height="50">
+              <rect width="52" height="50" fill="#fff"/>
+              <circle cx="30.8" cy="20.8" r="5" fill="#000"/>
+              <circle cx="39.5" cy="30.9" r="6.8" fill="#000"/>
+            </mask>
+          </defs>
+          <g mask="url(#brandRock2)">
+            <path d="M22 4 L22 46 L2 46 Z" fill="currentColor" opacity=".55"/>
+            <path d="M22 4 L44 46 L22 46 Z" fill="currentColor"/>
+          </g>
+          <circle cx="39.5" cy="30.9" r="5" fill="currentColor"/>
+        </svg>
+        <b>Kunnam Parcel</b>
+        <span>handled like it's ours</span>
+        <i class="biglabel__shine" aria-hidden="true"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= C7 · the doorstep ================= -->
+  <section class="scene" id="s-door" data-scene>
+    <p class="chip">06 · Knock knock</p>
+
+    <div class="porch">
+      <div class="house">
+        <i class="house__roof"></i>
+        <i class="house__window"></i>
+        <div class="doorway">
+          <div class="doorway__glow" aria-hidden="true"></div>
+          <div class="door">
+            <i class="door__knob"></i>
+          </div>
+        </div>
+        <!-- outside the doorway: the frame clips the swinging door, and the
+             arms must reach OUT of it toward the parcel, not into the glow -->
+        <div class="arms" aria-hidden="true"><i></i><i></i></div>
+        <i class="house__mat"></i>
+      </div>
+
+      <!-- the delivery person, parcel outstretched -->
+      <svg class="dman" viewBox="0 0 150 250" fill="none" aria-hidden="true">
+        <path d="M62 160 L56 234 M84 160 L92 234" stroke="#3d3630" stroke-width="17" stroke-linecap="round"/>
+        <rect x="42" y="228" width="30" height="12" rx="6" fill="#2e2620"/>
+        <rect x="80" y="228" width="30" height="12" rx="6" fill="#2e2620"/>
+        <rect x="46" y="90" width="52" height="80" rx="17" fill="#fdfaf3" stroke="#2e2620" stroke-width="3"/>
+        <rect x="52" y="96" width="40" height="58" rx="11" fill="#e0641f"/>
+        <path d="M66 118 l7 12 h-14 Z" fill="#fdfaf3"/>
+        <path d="M92 108 L138 116" stroke="#e8b26a" stroke-width="12" stroke-linecap="round"/>
+        <path d="M92 126 L134 136" stroke="#e8b26a" stroke-width="12" stroke-linecap="round"/>
+        <circle cx="74" cy="56" r="21" fill="#e8b26a" stroke="#2e2620" stroke-width="3"/>
+        <circle cx="84" cy="55" r="3" fill="#2e2620"/>
+        <path d="M80 66 q5 4 10 1" stroke="#2e2620" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+        <path d="M52 50 a22 22 0 0 1 42 -6 l11 3 -8 8 Z" fill="#e0641f" stroke="#2e2620" stroke-width="3"/>
+      </svg>
+
+      <!-- the customer, revealed as the door opens, reaching out -->
+      <svg class="customer" viewBox="0 0 150 250" fill="none" aria-hidden="true">
+        <path d="M66 160 L60 234 M88 160 L96 234" stroke="#5a5245" stroke-width="17" stroke-linecap="round"/>
+        <rect x="46" y="228" width="30" height="12" rx="6" fill="#2e2620"/>
+        <rect x="84" y="228" width="30" height="12" rx="6" fill="#2e2620"/>
+        <rect x="50" y="90" width="52" height="80" rx="17" fill="#1f6f54" stroke="#2e2620" stroke-width="3"/>
+        <g class="customer__arms">
+          <path d="M56 110 L14 118" stroke="#b07b4f" stroke-width="12" stroke-linecap="round"/>
+          <path d="M56 128 L18 140" stroke="#b07b4f" stroke-width="12" stroke-linecap="round"/>
+        </g>
+        <circle cx="76" cy="56" r="21" fill="#b07b4f" stroke="#2e2620" stroke-width="3"/>
+        <circle cx="66" cy="55" r="3" fill="#2e2620"/>
+        <path d="M62 66 q5 4 10 1" stroke="#2e2620" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+        <path d="M54 46 a22 22 0 0 1 44 0 q-8 -10 -22 -10 t-22 10 Z" fill="#3d2f23" stroke="#2e2620" stroke-width="3"/>
+      </svg>
+
+      <div class="handoff" aria-hidden="true">
+        <div class="box box--handoff">
+          <span class="box__tape"></span>
+          <span class="label label--small">
+            <svg viewBox="0 0 52 50" fill="none"><path d="M22 4 L22 46 L2 46 Z" fill="currentColor" opacity=".55"/><path d="M22 4 L44 46 L22 46 Z" fill="currentColor"/></svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= C8 · the unboxing ================= -->
+  <section class="scene" id="s-unbox" data-scene>
+    <p class="chip">07 · The good part</p>
+
+    <div class="unbox">
+      <i class="unbox__ray r1" aria-hidden="true"></i>
+      <i class="unbox__ray r2" aria-hidden="true"></i>
+      <i class="unbox__ray r3" aria-hidden="true"></i>
+
+      <!-- the customer: arms rise from the box rim into a cheer as the
+           console emerges (driven by the same --rise) -->
+      <svg class="unboxer" viewBox="0 0 160 240" fill="none" aria-hidden="true">
+        <path d="M70 152 L64 226 M92 152 L98 226" stroke="#5a5245" stroke-width="16" stroke-linecap="round"/>
+        <rect x="50" y="220" width="30" height="12" rx="6" fill="#2e2620"/>
+        <rect x="86" y="220" width="30" height="12" rx="6" fill="#2e2620"/>
+        <rect x="52" y="92" width="58" height="72" rx="17" fill="#1f6f54" stroke="#2e2620" stroke-width="3"/>
+        <g class="unboxer__arml"><path d="M56 104 L24 136" stroke="#b07b4f" stroke-width="12" stroke-linecap="round"/></g>
+        <g class="unboxer__armr"><path d="M106 104 L138 136" stroke="#b07b4f" stroke-width="12" stroke-linecap="round"/></g>
+        <circle cx="81" cy="58" r="21" fill="#b07b4f" stroke="#2e2620" stroke-width="3"/>
+        <circle cx="72" cy="54" r="3" fill="#2e2620"/>
+        <circle cx="90" cy="54" r="3" fill="#2e2620"/>
+        <ellipse class="unboxer__mouth" cx="81" cy="68" rx="4.5" ry="5.5" fill="#2e2620"/>
+        <path d="M58 48 a23 23 0 0 1 46 0 q-10 -12 -23 -12 t-23 12 Z" fill="#3d2f23" stroke="#2e2620" stroke-width="3"/>
+      </svg>
+
+      <div class="console console--reveal">
+        <span class="console__stripe"></span>
+        <svg class="console__logo" viewBox="0 0 52 50" fill="none" aria-hidden="true">
+          <path d="M22 4 L22 46 L2 46 Z" fill="currentColor" opacity=".55"/>
+          <path d="M22 4 L44 46 L22 46 Z" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <div class="box box--open">
+        <i class="box__flap box__flap--l"></i>
+        <i class="box__flap box__flap--r"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= C9 · game night ================= -->
+  <section class="scene" id="s-play" data-scene>
+    <p class="chip">08 · Game night</p>
+
+    <div class="room">
+      <div class="tv">
+        <div class="tv__screen">
+          <i class="tv__sun"></i>
+          <i class="tv__peak"></i>
+          <b class="tv__title">ASCENT</b>
+        </div>
+        <i class="tv__stand"></i>
+      </div>
+
+      <div class="couch">
+        <!-- the customer, seen from behind, pad up -->
+        <svg class="gamer g1" viewBox="0 0 140 130" fill="none" aria-hidden="true">
+          <rect x="26" y="62" width="88" height="66" rx="21" fill="#1f6f54" stroke="#2e2620" stroke-width="3"/>
+          <path d="M42 76 L20 46" stroke="#b07b4f" stroke-width="11" stroke-linecap="round"/>
+          <path d="M98 76 L120 46" stroke="#b07b4f" stroke-width="11" stroke-linecap="round"/>
+          <circle cx="70" cy="38" r="23" fill="#b07b4f" stroke="#2e2620" stroke-width="3"/>
+          <circle cx="45" cy="42" r="5" fill="#b07b4f" stroke="#2e2620" stroke-width="2.4"/>
+          <circle cx="95" cy="42" r="5" fill="#b07b4f" stroke="#2e2620" stroke-width="2.4"/>
+          <path d="M47 34 a23 23 0 0 1 46 0 q-2 12 -6 14 q4 -14 -17 -14 t-17 14 q-4 -2 -6 -14 Z" fill="#3d2f23" stroke="#2e2620" stroke-width="3"/>
+          <g class="gamer__pad"><rect x="102" y="24" width="36" height="20" rx="9" fill="#fdfaf3" stroke="#2e2620" stroke-width="3"/><circle cx="112" cy="34" r="2.6" fill="#2e2620"/><circle cx="128" cy="34" r="2.6" fill="#2e2620"/></g>
+        </svg>
+
+        <!-- the friend: lighter skin, topknot, blue tee, pad on the left -->
+        <svg class="gamer g2" viewBox="0 0 140 130" fill="none" aria-hidden="true">
+          <rect x="26" y="62" width="88" height="66" rx="21" fill="#46759f" stroke="#2e2620" stroke-width="3"/>
+          <path d="M98 76 L120 46" stroke="#e8b26a" stroke-width="11" stroke-linecap="round"/>
+          <path d="M42 76 L20 46" stroke="#e8b26a" stroke-width="11" stroke-linecap="round"/>
+          <circle cx="70" cy="38" r="23" fill="#e8b26a" stroke="#2e2620" stroke-width="3"/>
+          <circle cx="45" cy="42" r="5" fill="#e8b26a" stroke="#2e2620" stroke-width="2.4"/>
+          <circle cx="95" cy="42" r="5" fill="#e8b26a" stroke="#2e2620" stroke-width="2.4"/>
+          <path d="M48 32 a23 23 0 0 1 44 2 q-4 8 -8 10 q6 -14 -14 -14 t-14 14 q-4 -2 -8 -12 Z" fill="#8a4a2c" stroke="#2e2620" stroke-width="3"/>
+          <circle cx="70" cy="12" r="8" fill="#8a4a2c" stroke="#2e2620" stroke-width="3"/>
+          <g class="gamer__pad"><rect x="2" y="24" width="36" height="20" rx="9" fill="#fdfaf3" stroke="#2e2620" stroke-width="3"/><circle cx="12" cy="34" r="2.6" fill="#2e2620"/><circle cx="28" cy="34" r="2.6" fill="#2e2620"/></g>
+        </svg>
+      </div>
+
+      <i class="confetti" aria-hidden="true"></i>
+
+      <div class="endcta">
+        <h2>From click to couch.</h2>
+        <p>Every Kunnam order rides Kunnam Parcel — tracked the whole way, just like this.</p>
+        <a class="shopbtn shopbtn--buy" href="#s-order">Order yours</a>
+
+        <footer class="foot">
+          <p>Kunnam Store, Kunnam Play and Kunnam Parcel Service are fictional — a landing page study.</p>
+          <a href="../index.html">← Back to DIAZ</a>
+        </footer>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="zspacer" aria-hidden="true"></div>
+
+<script src="shop.js"></script>
+</body>
+</html>
