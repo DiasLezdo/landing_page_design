@@ -1,0 +1,137 @@
+/* ============================================================
+   DIAZ — liquid landing page
+   The canvas owns the artwork; everything here is chrome on top.
+   ============================================================ */
+
+:root {
+  --ink:        #2a2724;
+  --ink-soft:   #55504a;
+  --cream:      #e6e3dc;
+  --bar-pad:    28px;
+  --bar-type:   11px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;                 /* single fixed viewport, like the reference */
+  background: var(--cream);
+}
+
+body {
+  font-family: 'Archivo', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------- water surface ---------- */
+
+#water {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;               /* let us own touch drags for the ripple */
+  cursor: crosshair;
+}
+
+/* ---------- top / bottom bars ---------- */
+
+.bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--bar-pad);
+  pointer-events: none;             /* water stays clickable between the links */
+}
+
+.bar--top    { top: 0;    height: 56px; justify-content: space-between; }
+.bar--bottom { bottom: 0; height: 52px; gap: 34px; }
+
+.bar__group {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
+
+.bar__group--left,
+.bar__group--right { flex: 1 1 0; }
+.bar__group--right { justify-content: flex-end; }
+
+.bar a,
+.bar__copy {
+  pointer-events: auto;
+  font-size: var(--bar-type);
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.bar a {
+  transition: color .25s ease, opacity .25s ease;
+}
+
+.bar a:hover  { color: var(--ink); }
+.bar a:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 5px;
+  color: var(--ink);
+}
+
+/* ---------- centred drop mark ---------- */
+
+.mark {
+  pointer-events: auto;
+  display: block;
+  width: 30px;
+  height: 30px;
+  color: var(--ink);
+  flex: 0 0 auto;
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1), opacity .25s ease;
+}
+
+.mark svg { width: 100%; height: 100%; display: block; }
+.mark:hover { transform: translateY(-2px); }
+.mark:focus-visible { outline: 1px solid var(--ink); outline-offset: 6px; }
+
+/* ---------- no-WebGL fallback ---------- */
+
+.fallback {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  font-family: 'Archivo Black', 'Arial Black', Impact, sans-serif;
+  font-size: clamp(64px, 17vw, 300px);
+  letter-spacing: .02em;
+  color: #141414;
+  background: radial-gradient(120% 120% at 50% 45%, #f1efe9 0%, #e2dfd6 55%, #cfcbc0 100%);
+}
+
+.fallback[hidden] { display: none; }
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 860px) {
+  :root { --bar-pad: 16px; --bar-type: 10px; }
+
+  .bar__group { gap: 18px; }
+  .bar--bottom { gap: 18px; }
+
+  /* The reference lets its bars run off-edge; on phones we'd rather keep the
+     CTA and the mark, and drop the long nav than have text collide. */
+  .bar__group--left,
+  .bar--bottom .bar__group { display: none; }
+  .bar--top { justify-content: space-between; }
+  .mark { margin-right: auto; }
+}
