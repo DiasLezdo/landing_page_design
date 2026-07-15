@@ -1,0 +1,591 @@
+/* ============================================================
+   Kunnam Pictures
+   Dark, cyan-accented, scroll-driven — after boilerlab.ai.
+   JS writes --p on [data-scene]; motion is expressed here.
+   ============================================================ */
+
+:root {
+  --bg:     #05070b;
+  --panel:  #0c0f15;
+  --line:   #191d26;
+  --fg:     #eef1f5;
+  --muted:  #8a929e;
+  --accent: #4be3d4;
+  --ease:   cubic-bezier(.28, .11, .32, 1);
+  --pad:    max(22px, 5vw);
+  --nav-h:  62px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-h);
+  background: var(--bg);
+  overflow-x: clip;              /* never on body — it kills position:sticky */
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Inter', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.55;
+}
+
+svg { display: block; }
+
+/* ---------------------------------------------------------- nav */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  height: var(--nav-h);
+  background: rgba(5, 7, 11, .72);
+  backdrop-filter: saturate(150%) blur(16px);
+  -webkit-backdrop-filter: saturate(150%) blur(16px);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav__inner {
+  max-width: 1200px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 var(--pad);
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.brand { display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--fg); }
+.brand__mark { width: 21px; height: auto; color: var(--fg); }
+.brand__name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -.02em;
+}
+
+.nav__links { display: flex; gap: 24px; margin-left: auto; }
+
+.nav__links a {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .2s;
+}
+.nav__links a:hover { color: var(--fg); }
+
+/* sound switch */
+
+.sound {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 13px;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color .25s, color .25s;
+}
+
+.sound:hover { border-color: #2f3644; color: var(--fg); }
+.sound[aria-pressed="true"] { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+
+.sound__bars { display: flex; align-items: center; gap: 2px; height: 12px; }
+
+.sound__bars i {
+  width: 2px;
+  height: 3px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+/* Bars only dance while sound is actually on. */
+.sound[aria-pressed="true"] .sound__bars i { animation: eq .9s var(--ease) infinite; }
+.sound[aria-pressed="true"] .sound__bars i:nth-child(2) { animation-delay: .18s; }
+.sound[aria-pressed="true"] .sound__bars i:nth-child(3) { animation-delay: .36s; }
+.sound[aria-pressed="true"] .sound__bars i:nth-child(4) { animation-delay: .54s; }
+
+@keyframes eq { 50% { height: 12px; } }
+
+/* ------------------------------------------------- shared type */
+
+.section { max-width: 1200px; margin: 0 auto; padding: clamp(88px, 13vh, 150px) var(--pad); }
+
+.section__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(28px, 3.6vw, 46px);
+  font-weight: 600;
+  letter-spacing: -.03em;
+  margin-bottom: 44px;
+}
+
+.section__title--pad { padding: 0 var(--pad); max-width: 1200px; margin: 0 auto 44px; }
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+/* ============================================================
+   Depth reveal
+   ------------------------------------------------------------
+   Elements do not nudge up into place — they arrive from deep in
+   Z, toward the camera, because scrolling this page is meant to
+   read as flying forward. JS writes --z (0 = far away, 1 = here)
+   continuously from scroll position; everything below is derived
+   from it. Real perspective, not a fake scale, so items off the
+   centre line skew as they pass — which is what sells the depth.
+
+   Scoped to .js: without the script --z never updates, and a bare
+   `opacity: 0` default would leave a blank page.
+   ============================================================ */
+
+/* perspective only reaches DIRECT children — a grandchild gets none of it and
+   its translateZ silently renders at scale 1, i.e. no depth at all, with no
+   warning anywhere. So it goes on every element that directly contains a
+   [data-reveal], not just on the section wrappers.
+
+   perspective-origin is NOT set here: JS rewrites it every frame to point at
+   the centre of the *viewport*. A static `50% 50%` is the centre of each
+   container, so items would converge toward wherever their own section
+   happens to sit — which reads as rising from below rather than erupting
+   out of the middle of the screen. */
+.numbers, .partners, .films, .press, .contact,   /* section titles, labels, CTA */
+.stats, .stack, .quotes {                        /* the actual item parents */
+  perspective: 1200px;
+}
+
+.js [data-reveal] {
+  --z: 0;
+  transform: translate3d(0, 0, calc((var(--z) - 1) * 900px));
+  opacity: clamp(0, calc(var(--z) * 1.45), 1);
+  filter: blur(calc((1 - var(--z)) * 6px));
+  will-change: transform, opacity;
+}
+
+/* ============================================================
+   hero
+   ============================================================ */
+
+.hero {
+  position: relative;
+  min-height: calc(100vh - var(--nav-h));
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 30px;
+  padding: 60px var(--pad) 90px;
+  overflow: hidden;
+}
+
+/* Warp field — a real 3D starfield on canvas, fixed behind everything.
+   Static dots can't streak, and the streak radiating from the vanishing
+   point is the thing that sells "flying". */
+.warp {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Content rides above the field. Sections stay transparent so the stars
+   show through the whole way down, not just behind the hero. */
+.nav, main, .foot { position: relative; z-index: 1; }
+
+.hero__glow {
+  position: absolute;
+  left: 50%;
+  bottom: -34%;
+  width: min(1100px, 130vw);
+  aspect-ratio: 2 / 1;
+  transform: translateX(-50%);
+  background: radial-gradient(50% 60% at 50% 50%,
+    color-mix(in srgb, var(--accent) 16%, transparent) 0%, transparent 70%);
+  filter: blur(24px);
+  pointer-events: none;
+  z-index: -1;                 /* behind the ident, above the warp field */
+}
+
+/* ---- the ident ---- */
+
+.ident { position: relative; width: min(520px, 88vw); }
+.ident svg { width: 100%; height: auto; overflow: visible; }
+
+.ident__far  { fill: #10151d; }
+.ident__dark { fill: #2b323d; }
+.ident__lit  { fill: #cbd3dd; }
+
+.ident__ground { stroke: #1d232d; stroke-width: 1.5; }
+
+/* The rock starts sitting *in* the scar — same centre, same radius — so the
+   mountain reads whole, then breaks away and tumbles down the face. The
+   waypoints trace the slope before it kicks out at the bottom. */
+.ident__rock {
+  animation: rockfall 2.1s cubic-bezier(.42, 0, .3, 1) .45s both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes rockfall {
+  0%   { transform: translate(-48.5px, -52px) rotate(0deg); }
+  40%  { transform: translate(-31.3px, -27.4px) rotate(128deg); }
+  75%  { transform: translate(-16.9px, -6.9px) rotate(232deg); }
+  100% { transform: translate(0, 0) rotate(300deg); }
+}
+
+/* ---- hero type ---- */
+
+.hero__type { text-align: center; max-width: 780px; }
+
+.hero__h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(38px, 7vw, 88px);
+  font-weight: 700;
+  letter-spacing: -.045em;
+  line-height: 1.02;
+  background: linear-gradient(180deg, #fff 35%, #7f8894 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero__sub { margin-top: 18px; font-size: clamp(15px, 1.7vw, 19px); color: var(--muted); }
+
+.cue {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .25s;
+}
+.cue:hover { color: var(--fg); }
+
+.cue i {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(var(--accent), transparent);
+  animation: drop 1.9s var(--ease) infinite;
+}
+
+@keyframes drop { 0% { transform: scaleY(0); transform-origin: top; } 60%,100% { transform: scaleY(1); transform-origin: top; } }
+
+/* ============================================================
+   mission — words light with scroll
+   ============================================================ */
+
+.mission { height: 230vh; padding: 0; max-width: none; }
+
+.mission__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 0 var(--pad);
+}
+
+.mission__text {
+  max-width: 19ch;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(26px, 4.6vw, 60px);
+  font-weight: 600;
+  letter-spacing: -.035em;
+  line-height: 1.16;
+  text-align: center;
+}
+
+/* --i / --n are written by JS per word. */
+.mission__text span {
+  opacity: clamp(.14, calc((var(--p, 0) * 1.3 - (var(--i) / var(--n))) * 5.5), 1);
+  transition: opacity .12s linear;
+}
+
+/* -------------------------------------------------------- numbers */
+
+.stats { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 34px; }
+.stats li { border-top: 1px solid var(--line); padding-top: 22px; display: grid; gap: 8px; }
+
+.stats b {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(40px, 5vw, 66px);
+  font-weight: 700;
+  letter-spacing: -.045em;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.stats span { color: var(--muted); font-size: 14px; }
+
+/* ------------------------------------------------------- marquee */
+
+.partners { padding: 40px 0 100px; overflow: hidden; }
+.partners__label { text-align: center; color: var(--muted); font-size: 12px;
+                   letter-spacing: .18em; text-transform: uppercase; margin-bottom: 30px; }
+
+.marquee { overflow: hidden; padding: 9px 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+           mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+
+/* The track holds two identical runs; translating exactly -50% lands run two
+   where run one began, so the loop has no seam. JS clones the second run. */
+.marquee__track {
+  display: flex;
+  gap: 54px;
+  width: max-content;
+  animation: slide 34s linear infinite;
+}
+
+.marquee--rev .marquee__track { animation-direction: reverse; }
+.marquee:hover .marquee__track { animation-play-state: paused; }
+
+@keyframes slide { to { transform: translateX(-50%); } }
+
+.marquee__track span {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(19px, 2.2vw, 27px);
+  font-weight: 500;
+  letter-spacing: -.02em;
+  color: #3d4552;
+  white-space: nowrap;
+  transition: color .3s;
+}
+.marquee__track span:hover { color: var(--fg); }
+
+/* ============================================================
+   films — sticky stack
+   ============================================================ */
+
+.films { padding: clamp(80px, 12vh, 140px) 0; }
+
+.stack { max-width: 1200px; margin: 0 auto; padding: 0 var(--pad); }
+
+/* Not a sticky deck. Each card flies in from the back on its own, which is
+   the whole point of the page — pinning them would fight the depth. */
+.film {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 0;
+  margin-bottom: clamp(26px, 5vh, 60px);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--panel);
+  box-shadow: 0 -1px 0 rgba(255,255,255,.05) inset, 0 30px 70px -30px #000;
+}
+
+.film__art { position: relative; min-height: 330px; overflow: hidden; }
+.film__art > span { position: absolute; }
+
+.film__body { padding: clamp(28px, 3.4vw, 46px); display: flex; flex-direction: column; justify-content: center; gap: 13px; }
+.film__meta { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+
+.film__title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(30px, 3.6vw, 50px);
+  font-weight: 700;
+  letter-spacing: -.04em;
+  line-height: 1.04;
+}
+
+.film__log { color: var(--muted); font-size: clamp(15px, 1.5vw, 17px); max-width: 42ch; }
+
+.film__cta {
+  margin-top: 8px;
+  align-self: start;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.film__cta i { transition: transform .3s var(--ease); font-style: normal; }
+.film__cta:hover i { transform: translateX(5px); }
+
+/* ---- poster art, all CSS ---- */
+
+.art-ash { background: linear-gradient(180deg, #1b1008 0%, #55240e 55%, #16110c 100%); }
+.art-ash__sun { top: 30%; left: 50%; width: 88px; aspect-ratio: 1; transform: translate(-50%,-50%);
+                border-radius: 50%; background: radial-gradient(circle at 42% 38%, #ffd9a0, #e2601f 70%, #7a2a0c);
+                box-shadow: 0 0 90px 30px rgba(226,96,31,.45); }
+.art-ash__ridge { left: -4%; right: -4%; bottom: 0; height: 42%; background: #0a0705;
+                  clip-path: polygon(0 44%, 16% 14%, 32% 40%, 50% 6%, 66% 36%, 84% 12%, 100% 38%, 100% 100%, 0 100%); }
+
+.art-coast { background: linear-gradient(180deg, #0a1a26 0%, #12313f 52%, #061019 100%); }
+.art-coast__sea { left: 0; right: 0; bottom: 0; height: 46%;
+                  background: repeating-linear-gradient(180deg, rgba(255,255,255,.07) 0 1px, transparent 1px 8px), #071620; }
+.art-coast__boat { left: 50%; top: 52%; width: 52px; height: 12px; transform: translateX(-50%);
+                   background: #d6dfe6; clip-path: polygon(6% 0, 94% 0, 78% 100%, 22% 100%);
+                   box-shadow: 0 14px 26px rgba(0,0,0,.6); }
+
+.art-night { background: linear-gradient(180deg, #07090f 0%, #0e1420 100%); }
+.art-night__grid { inset: 0; background:
+  repeating-linear-gradient(90deg, rgba(120,150,200,.10) 0 2px, transparent 2px 15px),
+  repeating-linear-gradient(180deg, rgba(120,150,200,.10) 0 2px, transparent 2px 19px); }
+.art-night__lit { inset: 0; background:
+  radial-gradient(9px 11px at 26% 34%, #ffd98a 60%, transparent 62%),
+  radial-gradient(9px 11px at 62% 58%, #ffd98a 60%, transparent 62%),
+  radial-gradient(9px 11px at 78% 26%, #ffe6ae 60%, transparent 62%),
+  radial-gradient(9px 11px at 40% 72%, #ffd98a 60%, transparent 62%); }
+
+.art-salt { background: linear-gradient(180deg, #10141c 0%, #223243 50%, #0a0f16 100%); }
+.art-salt__surf { left: -4%; right: -4%; bottom: 0; height: 40%;
+                  background: repeating-linear-gradient(180deg, rgba(220,240,255,.13) 0 2px, transparent 2px 9px), #0c141d; }
+.art-salt__figure { left: 50%; bottom: 30%; width: 15px; height: 74px; transform: translateX(-50%);
+                    background: #04060a; border-radius: 8px 8px 2px 2px; box-shadow: 0 0 34px 10px rgba(0,0,0,.6); }
+
+.art-wave { background: radial-gradient(70% 70% at 50% 62%, #14243a 0%, #070a10 72%); }
+.art-wave__rings { inset: 0; background:
+  repeating-radial-gradient(circle at 50% 78%, rgba(75,227,212,.16) 0 1px, transparent 1px 22px); }
+.art-wave__mast { left: 50%; bottom: 22%; width: 3px; height: 46%; transform: translateX(-50%);
+                  background: linear-gradient(180deg, var(--accent), #123); }
+
+.art-open { background: linear-gradient(135deg, #1a1524 0%, #2b1d3a 50%, #0d0a14 100%); }
+.art-open__bars { inset: 0; background: repeating-linear-gradient(90deg, #0b0810 0 26px, transparent 26px 52px); opacity: .5; }
+.art-open__dot { top: 12%; right: 12%; width: 13px; aspect-ratio: 1; border-radius: 50%;
+                 background: #ff4b4b; box-shadow: 0 0 22px 7px rgba(255,75,75,.5); animation: rec 1.4s steps(1) infinite; }
+@keyframes rec { 50% { opacity: .25; } }
+
+.art-rock { background: linear-gradient(180deg, #0b1018 0%, #1b2430 60%, #080b11 100%); }
+.art-rock__peak { left: 50%; bottom: 12%; width: 62%; height: 66%; transform: translateX(-50%);
+                  background: #39424f; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.art-rock__stone { right: 20%; bottom: 16%; width: 30px; aspect-ratio: 1; border-radius: 50%;
+                   background: radial-gradient(circle at 36% 32%, #e9edf2, #78818d);
+                   box-shadow: 0 10px 24px rgba(0,0,0,.65); }
+
+/* --------------------------------------------------------- press */
+
+.quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 16px; }
+
+.quotes blockquote {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 28px;
+  background: linear-gradient(180deg, #0e1219 0%, #090c11 100%);
+  display: grid;
+  gap: 16px;
+  align-content: space-between;
+}
+
+.quotes p { font-size: clamp(16px, 1.5vw, 19px); letter-spacing: -.015em; }
+.quotes cite { font-style: normal; font-size: 12px; letter-spacing: .1em;
+               text-transform: uppercase; color: var(--accent); }
+
+/* ------------------------------------------------------- contact */
+
+.contact {
+  position: relative;
+  padding: clamp(110px, 18vh, 190px) var(--pad);
+  display: grid;
+  place-items: center;
+  gap: 34px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.moon {
+  position: absolute;
+  left: 50%;
+  bottom: -56%;
+  width: min(560px, 112vw);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(26px 26px at 38% 34%, rgba(0,0,0,.18), transparent 60%),
+    radial-gradient(15px 15px at 62% 48%, rgba(0,0,0,.16), transparent 60%),
+    radial-gradient(20px 20px at 50% 66%, rgba(0,0,0,.14), transparent 60%),
+    radial-gradient(circle at 42% 36%, #b7c4d3 0%, #74829444 52%, #2b323d 100%);
+  box-shadow: 0 0 130px 40px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+/* The headline sits over the moon, and white-on-moonlight is unreadable.
+   Fade the upper limb back into the page so the type wins. */
+.moon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(180deg,
+    var(--bg) 0%, color-mix(in srgb, var(--bg) 62%, transparent) 30%, transparent 58%);
+}
+
+.contact__h2 {
+  position: relative;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(34px, 5.6vw, 74px);
+  font-weight: 700;
+  letter-spacing: -.045em;
+  line-height: 1.04;
+}
+
+.contact__btn {
+  position: relative;
+  background: var(--accent);
+  color: #04120f;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 30px;
+  border-radius: 999px;
+  transition: transform .25s var(--ease), box-shadow .25s;
+}
+.contact__btn:hover { transform: translateY(-2px); box-shadow: 0 12px 34px -8px var(--accent); }
+
+/* -------------------------------------------------------- footer */
+
+.foot {
+  border-top: 1px solid var(--line);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 34px var(--pad);
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  color: #5c6472;
+  font-size: 12px;
+}
+.foot a { color: var(--accent); text-decoration: none; }
+.foot a:hover { text-decoration: underline; }
+
+/* -------------------------------------------------- small screens */
+
+@media (max-width: 860px) {
+  .nav__links { display: none; }
+  .film { grid-template-columns: 1fr; }
+  .film__art { min-height: 220px; }
+  /* Shallower throw on small screens — a full 900px of Z on a phone-width
+     viewport reads as things pinging in from off-screen. */
+  .js [data-reveal] { transform: translate3d(0, 0, calc((var(--z) - 1) * 520px)); }
+}
+
+/* ------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  /* Land everything at z=1: no flight, but never a blank page either. */
+  .js [data-reveal] { --z: 1; opacity: 1; transform: none; filter: none; }
+  .mission__text span { opacity: 1; }
+  .cue i, .art-open__dot { animation: none; }
+  .marquee__track { animation: none; }
+  /* Skip the tumble but leave the rock at its landing point, scar showing. */
+  .ident__rock { animation: none; }
+}

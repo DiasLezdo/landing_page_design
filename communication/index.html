@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kunnam Relay</title>
+<meta name="description" content="Kunnam Relay — end-to-end encrypted channels, routed on your terms.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="comm.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<!-- Faint blueprint grid + the corner brackets that frame the whole viewport -->
+<div class="grid" aria-hidden="true"></div>
+<div class="frame" aria-hidden="true">
+  <i class="frame__c frame__c--tl"></i><i class="frame__c frame__c--tr"></i>
+  <i class="frame__c frame__c--bl"></i><i class="frame__c frame__c--br"></i>
+</div>
+
+<!-- ============================== nav ============================== -->
+<header class="hud">
+  <div class="hud__left">
+    <span class="hud__rule" aria-hidden="true"></span>
+    <span class="hud__id">Kunnam Relay</span>
+    <span class="dot" id="linkDot" aria-hidden="true"></span>
+    <span class="hud__state" id="linkState">Link stable</span>
+    <span class="hud__loop">[loop<span id="loop">00</span>]</span>
+  </div>
+
+  <nav class="hud__nav" aria-label="Sections">
+    <a href="#channels">[Channels]</a>
+    <a href="#protocol">[Protocol]</a>
+    <a href="#metrics">[Metrics]</a>
+    <a href="#access">[Access]</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ============================= hero ============================= -->
+  <section class="hero">
+    <!-- The node: a low-poly cluster with orbiting rings, drawn on canvas -->
+    <canvas id="node" class="node" aria-hidden="true"></canvas>
+
+    <div class="hero__type">
+      <p class="tag" data-reveal>// relay·rx</p>
+      <h1 class="hero__h1" data-reveal>Every channel,<br>one relay</h1>
+      <p class="hero__sub" data-reveal>
+        End-to-end encrypted messaging, voice and presence — routed on
+        hardware you choose, logged nowhere you don't.
+      </p>
+      <div class="hero__cta" data-reveal>
+        <a class="btn btn--solid" href="#access">[ Request access ]</a>
+        <a class="btn" href="#protocol">[ Read the protocol ]</a>
+      </div>
+    </div>
+
+    <!-- Boot log. Types itself out, then holds with a live cursor. -->
+    <div class="boot" aria-hidden="true">
+      <p class="boot__head">// subsys_relay <span class="boot__dots"></span> log</p>
+      <ul class="boot__log" id="bootLog"></ul>
+    </div>
+
+    <!-- Real values, read from the actual browser — the reference's whole
+         trick is that the readouts are true, not decoration. -->
+    <dl class="telem" id="telem">
+      <div><dt>Locale</dt><dd id="tLocale">—</dd></div>
+      <div><dt>Viewport</dt><dd id="tView">—</dd></div>
+      <div><dt>Online</dt><dd id="tOnline">—</dd></div>
+      <div><dt>Clock</dt><dd id="tClock">—</dd></div>
+    </dl>
+  </section>
+
+  <!-- =========================== channels =========================== -->
+  <section class="sec" id="channels">
+    <p class="sec__label" data-reveal>// subsys_channels</p>
+    <h2 class="sec__title" data-reveal>Four ways to reach anyone,<br>none of them leaky.</h2>
+
+    <ul class="cards">
+      <li class="card" data-reveal style="--d:0">
+        <span class="card__idx">sec·01</span>
+        <h3>Text</h3>
+        <p>Sealed-sender messages. The relay routes the envelope and never sees the letter.</p>
+        <span class="card__meta">aes-256-gcm · x25519</span>
+      </li>
+      <li class="card" data-reveal style="--d:1">
+        <span class="card__idx">sec·02</span>
+        <h3>Voice</h3>
+        <p>Sub-40 ms hops with jitter smoothing that doesn't phone home to tune itself.</p>
+        <span class="card__meta">opus · srtp</span>
+      </li>
+      <li class="card" data-reveal style="--d:2">
+        <span class="card__idx">sec·03</span>
+        <h3>Presence</h3>
+        <p>Say who's online without telling the server who's asking.</p>
+        <span class="card__meta">private set intersection</span>
+      </li>
+      <li class="card" data-reveal style="--d:3">
+        <span class="card__idx">sec·04</span>
+        <h3>Transfer</h3>
+        <p>Files stream peer to peer. The relay is a fallback, not a filing cabinet.</p>
+        <span class="card__meta">webrtc · fallback tls</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- =========================== protocol =========================== -->
+  <section class="sec" id="protocol">
+    <p class="sec__label" data-reveal>// subsys_protocol</p>
+    <h2 class="sec__title" data-reveal>The handshake, in full.</h2>
+
+    <!-- Schematic: four nodes on a rail, drawn rather than photographed -->
+    <div class="rail" data-reveal>
+      <ol class="rail__steps">
+        <li class="step" style="--d:0">
+          <span class="step__n">00</span>
+          <b>Keypair</b>
+          <p>Generated on device. The private half never serialises.</p>
+        </li>
+        <li class="step" style="--d:1">
+          <span class="step__n">01</span>
+          <b>Handshake</b>
+          <p>Ephemeral X25519. Forward secrecy per session, not per account.</p>
+        </li>
+        <li class="step" style="--d:2">
+          <span class="step__n">02</span>
+          <b>Route</b>
+          <p>Envelope hops the relay. Sender identity is stripped at ingress.</p>
+        </li>
+        <li class="step" style="--d:3">
+          <span class="step__n">03</span>
+          <b>Seal</b>
+          <p>Delivered, decrypted on device, receipt is optional and off by default.</p>
+        </li>
+      </ol>
+    </div>
+
+    <p class="note" data-reveal>
+      [note] The relay is deliberately dumb. It knows an envelope arrived and
+      where to push it next. It does not know who sent it, what it says, or
+      that you and the recipient have ever spoken before.
+    </p>
+  </section>
+
+  <!-- =========================== metrics =========================== -->
+  <section class="sec" id="metrics">
+    <p class="sec__label" data-reveal>// subsys_metrics</p>
+    <ul class="metrics">
+      <li data-reveal style="--d:0"><b data-count="38" data-suffix=" ms">0</b><span>median hop, region-local</span></li>
+      <li data-reveal style="--d:1"><b data-count="0" data-suffix="">0</b><span>plaintext bytes at rest</span></li>
+      <li data-reveal style="--d:2"><b data-count="99" data-suffix=".97%">0</b><span>relay uptime, trailing year</span></li>
+      <li data-reveal style="--d:3"><b data-count="4" data-suffix="">0</b><span>independent audits published</span></li>
+    </ul>
+  </section>
+
+  <!-- ============================ access ============================ -->
+  <section class="sec access" id="access">
+    <p class="sec__label" data-reveal>// access_gate</p>
+    <h2 class="sec__title sec__title--big" data-reveal>Open a channel.</h2>
+    <p class="access__sub" data-reveal>Field access is invite-gated while the second audit lands.</p>
+    <a class="btn btn--solid btn--lg" href="#" data-reveal>[ Request access ]</a>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Kunnam Relay is a fictional product built as a landing page study. Specs and audits are invented.</p>
+  <a href="../index.html">← Back to DIAZ</a>
+</footer>
+
+<script src="comm.js"></script>
+</body>
+</html>

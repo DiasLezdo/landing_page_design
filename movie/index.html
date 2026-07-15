@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kunnam Pictures</title>
+<meta name="description" content="Kunnam Pictures — films that land like a rockfall.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="movie.css">
+
+<!-- The depth reveal parks elements at opacity 0 until JS supplies --z, so
+     gate it on JS being alive. Inline and in <head> so there's no flash. -->
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<!-- Warp field. Lives behind the whole page, not just the hero — the
+     conceit is that you're flying the entire way down. -->
+<canvas id="warp" class="warp" aria-hidden="true"></canvas>
+
+<!-- ============================== nav ============================== -->
+<header class="nav">
+  <div class="nav__inner">
+    <a class="brand" href="#top">
+      <svg class="brand__mark" viewBox="0 0 52 50" fill="none" aria-hidden="true">
+        <defs>
+          <mask id="brandRock" maskUnits="userSpaceOnUse" x="0" y="0" width="52" height="50">
+            <rect width="52" height="50" fill="#fff"/>
+            <circle cx="30.8" cy="20.8" r="5" fill="#000"/>
+            <circle cx="39.5" cy="30.9" r="6.8" fill="#000"/>
+          </mask>
+        </defs>
+        <g mask="url(#brandRock)">
+          <path d="M22 4 L22 46 L2 46 Z"  fill="currentColor" opacity=".5"/>
+          <path d="M22 4 L44 46 L22 46 Z" fill="currentColor" opacity=".9"/>
+        </g>
+        <circle cx="39.5" cy="30.9" r="5" fill="currentColor"/>
+      </svg>
+      <span class="brand__name">Kunnam</span>
+    </a>
+
+    <nav class="nav__links" aria-label="Sections">
+      <a href="#mission">Mission</a>
+      <a href="#numbers">Numbers</a>
+      <a href="#films">Films</a>
+      <a href="#press">Press</a>
+    </nav>
+
+    <!-- Boiler Lab's sound switch. Off by default and only ever started by
+         this click — nothing here autoplays. -->
+    <button class="sound" id="sound" aria-pressed="false">
+      <span class="sound__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="sound__label">Sound: Off</span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ====================== hero / studio ident ====================== -->
+  <section class="hero">
+    <div class="hero__glow" aria-hidden="true"></div>
+
+    <!-- The ident. The rock begins filling the scar, so the mountain reads
+         whole; it then breaks away and tumbles down the face. -->
+    <div class="ident" id="ident">
+      <svg viewBox="0 0 200 140" fill="none" aria-hidden="true">
+        <defs>
+          <mask id="identScar" maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="140">
+            <rect width="200" height="140" fill="#fff"/>
+            <circle cx="94.5" cy="55" r="14" fill="#000"/>
+          </mask>
+        </defs>
+
+        <path class="ident__far" d="M34 62 L74 120 L-6 120 Z"/>
+
+        <g mask="url(#identScar)">
+          <path class="ident__dark" d="M70 20 L70 120 L10 120 Z"/>
+          <path class="ident__lit"  d="M70 20 L140 120 L70 120 Z"/>
+        </g>
+
+        <g class="ident__rock">
+          <circle cx="143" cy="107" r="14" fill="#e9edf2"/>
+          <path d="M143 93 A14 14 0 0 1 155.1 100 L143 107 Z" fill="#9aa3ad" opacity=".55"/>
+          <path d="M143 107 L155.1 114 A14 14 0 0 1 143 121 Z" fill="#7d858f" opacity=".5"/>
+        </g>
+
+        <line class="ident__ground" x1="-6" y1="120" x2="206" y2="120"/>
+      </svg>
+    </div>
+
+    <div class="hero__type">
+      <p class="eyebrow">Kunnam Pictures</p>
+      <h1 class="hero__h1">Films that land<br>like a rockfall</h1>
+      <p class="hero__sub">Turn scripts into films — screened, distributed and remembered.</p>
+    </div>
+
+    <a class="cue" href="#mission">
+      <span>Scroll down to explore</span>
+      <i aria-hidden="true"></i>
+    </a>
+  </section>
+
+  <!-- =========================== mission =========================== -->
+  <section class="section mission" id="mission" data-scene>
+    <div class="mission__sticky">
+      <p class="mission__text" data-reveal-text>
+        We make films to knock the ordinary out of people's evenings.
+        Every one of them starts on a mountain and ends on a screen.
+      </p>
+    </div>
+  </section>
+
+  <!-- =========================== numbers =========================== -->
+  <section class="section numbers" id="numbers">
+    <h2 class="section__title" data-reveal>The numbers</h2>
+    <ul class="stats">
+      <li data-reveal style="--d:0">
+        <b data-count="180" data-suffix="M+">0</b><span>tickets sold worldwide</span>
+      </li>
+      <li data-reveal style="--d:1">
+        <b data-count="3" data-suffix="">0</b><span>films taken to a #1 opening weekend</span>
+      </li>
+      <li data-reveal style="--d:2">
+        <b data-count="42" data-suffix="">0</b><span>festival selections in four years</span>
+      </li>
+      <li data-reveal style="--d:3">
+        <b data-count="9" data-suffix="">0</b><span>awards for directing and sound</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ====================== partners marquee ======================= -->
+  <!-- Invented festivals. Real ones would imply selections we can't claim. -->
+  <section class="partners" aria-label="Festival partners">
+    <p class="partners__label" data-reveal>Selected at</p>
+    <div class="marquee">
+      <div class="marquee__track" id="mqA">
+        <span>Northpoint</span><span>Solstice</span><span>Harbor Film Fest</span>
+        <span>Meridian</span><span>Blackrock</span><span>Lumen</span><span>Ninth Street</span>
+      </div>
+    </div>
+    <div class="marquee marquee--rev">
+      <div class="marquee__track" id="mqB">
+        <span>Coldwater</span><span>The Vantage</span><span>Pine &amp; Ash</span>
+        <span>Rivermouth</span><span>Aperture</span><span>Longitude</span><span>Deep Field</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ films ============================ -->
+  <section class="films" id="films">
+    <h2 class="section__title section__title--pad" data-reveal>The slate</h2>
+
+    <div class="stack">
+      <article class="film" data-reveal>
+        <div class="film__art art-ash" aria-hidden="true"><span class="art-ash__sun"></span><span class="art-ash__ridge"></span></div>
+        <div class="film__body">
+          <p class="film__meta">2026 · Disaster · 118 min</p>
+          <h3 class="film__title">Ashfall</h3>
+          <p class="film__log">A town has nine minutes to leave. Most of them argue for six.</p>
+          <a class="film__cta" href="#">Watch trailer <i aria-hidden="true">→</i></a>
+        </div>
+      </article>
+
+      <article class="film" data-reveal>
+        <div class="film__art art-coast" aria-hidden="true"><span class="art-coast__sea"></span><span class="art-coast__boat"></span></div>
+        <div class="film__body">
+          <p class="film__meta">2025 · Drama · 104 min</p>
+          <h3 class="film__title">The Quiet Coast</h3>
+          <p class="film__log">Two brothers, one boat, and no signal for eleven days.</p>
+          <a class="film__cta" href="#">Watch trailer <i aria-hidden="true">→</i></a>
+        </div>
+      </article>
+
+      <article class="film" data-reveal>
+        <div class="film__art art-night" aria-hidden="true"><span class="art-night__grid"></span><span class="art-night__lit"></span></div>
+        <div class="film__body">
+          <p class="film__meta">2025 · Thriller · 96 min</p>
+          <h3 class="film__title">Nightshift</h3>
+          <p class="film__log">The building never sleeps. Neither does the man on floor forty.</p>
+          <a class="film__cta" href="#">Watch trailer <i aria-hidden="true">→</i></a>
+        </div>
+      </article>
+
+      <article class="film" data-reveal>
+        <div class="film__art art-salt" aria-hidden="true"><span class="art-salt__figure"></span><span class="art-salt__surf"></span></div>
+        <div class="film__body">
+          <p class="film__meta">2024 · Mystery · 131 min</p>
+          <h3 class="film__title">Salt</h3>
+          <p class="film__log">She walked out of the sea with no name and a very good lawyer.</p>
+          <a class="film__cta" href="#">Watch trailer <i aria-hidden="true">→</i></a>
+        </div>
+      </article>
+
+      <article class="film" data-reveal>
+        <div class="film__art art-wave" aria-hidden="true"><span class="art-wave__rings"></span><span class="art-wave__mast"></span></div>
+        <div class="film__body">
+          <p class="film__meta">2024 · Sci-fi · 122 min</p>
+          <h3 class="film__title">Longwave</h3>
+          <p class="film__log">A radio station at the end of the world keeps taking requests.</p>
+          <a class="film__cta" href="#">Watch trailer <i aria-hidden="true">→</i></a>
+        </div>
+      </article>
+
+      <article class="film" data-reveal>
+        <div class="film__art art-open" aria-hidden="true"><span class="art-open__bars"></span><span class="art-open__dot"></span></div>
+        <div class="film__body">
+          <p class="film__meta">2023 · Comedy · 89 min</p>
+          <h3 class="film__title">Cold Open</h3>
+          <p class="film__log">Nobody told the crew the camera was still rolling. It was.</p>
+          <a class="film__cta" href="#">Watch trailer <i aria-hidden="true">→</i></a>
+        </div>
+      </article>
+
+      <article class="film" data-reveal>
+        <div class="film__art art-rock" aria-hidden="true"><span class="art-rock__peak"></span><span class="art-rock__stone"></span></div>
+        <div class="film__body">
+          <p class="film__meta">2022 · Documentary · 74 min</p>
+          <h3 class="film__title">Rockfall</h3>
+          <p class="film__log">Where it started. One mountain, one camera, one very bad idea.</p>
+          <a class="film__cta" href="#">Watch trailer <i aria-hidden="true">→</i></a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================ press ============================ -->
+  <!-- Invented outlets, for the same reason as the festivals. -->
+  <section class="section press" id="press">
+    <h2 class="section__title" data-reveal>In press</h2>
+    <div class="quotes">
+      <blockquote data-reveal style="--d:0">
+        <p>“Kunnam cut their films like they're running out of time, and somehow that's the point.”</p>
+        <cite>Frame Rate</cite>
+      </blockquote>
+      <blockquote data-reveal style="--d:1">
+        <p>“Ashfall does in nine minutes what most disaster films can't do in two hours.”</p>
+        <cite>The Reel</cite>
+      </blockquote>
+      <blockquote data-reveal style="--d:2">
+        <p>“The most confident sound design of the year, by a distance.”</p>
+        <cite>Northpoint Review</cite>
+      </blockquote>
+      <blockquote data-reveal style="--d:3">
+        <p>“A studio that still believes an audience will sit still if you earn it.”</p>
+        <cite>Cut Magazine</cite>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- =========================== contact =========================== -->
+  <section class="contact" id="contacts">
+    <div class="moon" aria-hidden="true"></div>
+    <h2 class="contact__h2" data-reveal>Let's move<br>a mountain together</h2>
+    <a class="contact__btn" href="#" data-reveal>Get in touch</a>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Kunnam Pictures is a fictional studio built as a landing page study. Festivals, quotes and films are invented.</p>
+  <a href="../index.html">← Back to DIAZ</a>
+</footer>
+
+<script src="movie.js"></script>
+</body>
+</html>
