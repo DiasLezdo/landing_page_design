@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect x="3" y="3" width="42" height="42" rx="11" fill="#060213"/>
+  <g transform="translate(8.4, 9) scale(0.6)">
+    <defs>
+        <linearGradient id="neon" x1="0" y1="0" x2="52" y2="50" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00f0ff"/><stop offset="1" stop-color="#ff2ec4"/></linearGradient>
+      <mask id="m" maskUnits="userSpaceOnUse" x="0" y="0" width="52" height="50">
+        <rect width="52" height="50" fill="#fff"/>
+        <circle cx="30.8" cy="20.8" r="5" fill="#000"/>
+        <circle cx="39.5" cy="30.9" r="6.8" fill="#000"/>
+      </mask>
+    </defs>
+    <g mask="url(#m)">
+      <path d="M22 4 L22 46 L2 46 Z" fill="url(#neon)" opacity=".55"/>
+      <path d="M22 4 L44 46 L22 46 Z" fill="url(#neon)"/>
+    </g>
+    <circle cx="39.5" cy="30.9" r="5" fill="url(#neon)"/>
+  </g>
+</svg>
