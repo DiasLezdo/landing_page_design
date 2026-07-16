@@ -1033,6 +1033,17 @@ svg { display: block; }
 
 .zmode main > section.is-front { pointer-events: auto; }
 
+/* The active .zone card sets its own pointer-events: auto (the chapter
+   switcher needs it), and an explicit auto on a descendant re-enables
+   hit-testing THROUGH a parent's pointer-events: none. Since slides are
+   flattened siblings stacked in DOM order, that invisible card — parked
+   2000px deep in Z — was swallowing clicks meant for the front slide.
+   Off-front slides get their zones sealed again here. */
+/* .zones__stage is in the chain purely for specificity: the switcher's
+   activation rule weighs (0,4,1) with its attr + nth-of-type, and this
+   must outweigh it at (0,4,2) or the seal silently loses. */
+.zmode main > section:not(.is-front) .zones__stage .zone { pointer-events: none; }
+
 /* No backdrop plate on slides — the canyon must stay visible through the
    whole stack (a full-section plate walls it off). Legibility comes from
    dark text halos instead, and the fixed .vignette already dims the edges. */
@@ -1233,3 +1244,102 @@ svg { display: block; }
 .curpick svg { width: 100%; height: 100%; }
 
 @media (max-width: 900px) { .curpick { display: none; } }
+
+
+/* ============================================================
+   weapon-specific click FX
+   ============================================================ */
+
+/* ---- hammer: sky-strike lightning ---- */
+
+.zapflash {
+  position: fixed;
+  inset: 0;
+  z-index: 184;
+  pointer-events: none;
+  background: radial-gradient(60% 60% at var(--fx, 50%) var(--fy, 50%),
+    rgba(225, 244, 255, .6), rgba(150, 200, 255, .14) 45%, transparent 75%);
+  animation: zapflash .4s ease-out forwards;
+}
+
+/* real lightning flickers: bright, dip, bright again, gone */
+@keyframes zapflash {
+  0%   { opacity: 1; }
+  18%  { opacity: .25; }
+  32%  { opacity: .85; }
+  100% { opacity: 0; }
+}
+
+.zap {
+  position: fixed;
+  inset: 0;
+  z-index: 185;
+  pointer-events: none;
+  animation: zapfade .5s ease-out forwards;
+}
+
+@keyframes zapfade { 0%, 55% { opacity: 1; } 100% { opacity: 0; } }
+
+.zap svg { width: 100%; height: 100%; }
+.zap path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.zap .bolt-glow   { stroke: rgba(0, 240, 255, .8); stroke-width: 8; filter: blur(4px); }
+.zap .bolt-core   { stroke: #ffffff; stroke-width: 2.6; }
+.zap .bolt-branch { stroke: rgba(200, 240, 255, .8); stroke-width: 1.6; }
+
+/* ---- hammer on text: letters knocked loose ---- */
+
+.shard {
+  display: inline-block;
+  animation: shardfall 1.35s cubic-bezier(.3, .05, .7, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes shardfall {
+  /* a little pop upward first — the hit knocks them loose */
+  14%  { transform: translate(calc(var(--sdx) * .18), -16px) rotate(calc(var(--srot) * .15)); opacity: 1; }
+  100% { transform: translate(var(--sdx), 76vh) rotate(var(--srot)); opacity: 0; }
+}
+
+/* the glitch title mirrors its text in pseudo-elements — hide them while
+   the real letters are falling or the word stays eerily intact behind */
+.is-shattered::before,
+.is-shattered::after { content: none !important; }
+
+/* ---- gauntlet: energy beam from the click point ---- */
+
+.beam {
+  position: fixed;
+  z-index: 185;
+  pointer-events: none;
+  height: 5px;
+  border-radius: 3px;
+  translate: 0 -50%;
+  transform-origin: left center;
+  background: linear-gradient(90deg, #ffffff, #9df5ff 26%, rgba(0, 240, 255, .35) 70%, transparent);
+  box-shadow:
+    0 0 14px 3px rgba(0, 240, 255, .75),
+    0 0 44px 12px rgba(139, 92, 255, .4);
+  animation: beamfire .46s ease-out forwards;
+}
+
+/* scale is an individual property, so it composes with the inline rotate */
+@keyframes beamfire {
+  0%   { scale: 0 1; opacity: 1; }
+  22%  { scale: 1 1; }
+  78%  { opacity: 1; }
+  100% { opacity: 0; scale: 1 .15; }
+}
+
+.beam-muzzle {
+  position: fixed;
+  z-index: 186;
+  pointer-events: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  translate: -50% -50%;
+  background: radial-gradient(circle, #fff 0%, #9df5ff 40%, transparent 70%);
+  animation: muzzle .3s ease-out forwards;
+}
+
+@keyframes muzzle { to { scale: 2.4; opacity: 0; } }

@@ -435,19 +435,15 @@
       syncChips();
     });
 
-    /* ---- click FX: shockwave + sparks + weapon strike + impact shake ---- */
+    /* ---- click FX: every weapon hits differently ----
+       reticle/blade: shockwave + sparks. Hammer: a lightning strike from
+       the sky, and any text it lands on breaks apart and falls. Gauntlet:
+       an energy beam fires from the point of impact. ---- */
 
-    addEventListener('pointerdown', e => {
-      // the equipped weapon swings/slashes/blasts
-      cur.classList.remove('is-strike');
-      void cur.offsetWidth;                       // restart mid-animation clicks
-      cur.classList.add('is-strike');
-      setTimeout(() => cur.classList.remove('is-strike'), 330);
-
-      // shockwave ring + spark burst at the point of impact
+    function spawnSparks(x, y) {
       const fx = document.createElement('div');
       fx.className = 'fx';
-      fx.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+      fx.style.transform = `translate(${x}px, ${y}px)`;
       let inner = '<i class="fx__ring"></i>';
       for (let i = 0; i < 8; i++) {
         const a = Math.random() * Math.PI * 2;
@@ -458,6 +454,102 @@
       fx.innerHTML = inner;
       document.body.append(fx);
       setTimeout(() => fx.remove(), 700);
+    }
+
+    // one jagged run from above the viewport down to the strike point
+    function boltPath(x, y, wander, endShort) {
+      const endY = endShort ? y * 0.62 : y;
+      let d = `M ${(x + (Math.random() * 2 - 1) * 70).toFixed(0)} -20`;
+      const steps = Math.max(4, Math.round(endY / 70));
+      for (let i = 1; i <= steps; i++) {
+        const ty = -20 + (endY + 20) * (i / steps);
+        const tx = i === steps && !endShort ? x : x + (Math.random() * 2 - 1) * wander;
+        d += ` L ${tx.toFixed(0)} ${ty.toFixed(0)}`;
+      }
+      return d;
+    }
+
+    function spawnLightning(x, y) {
+      const flash = document.createElement('i');
+      flash.className = 'zapflash';
+      flash.style.setProperty('--fx', (x / innerWidth * 100).toFixed(1) + '%');
+      flash.style.setProperty('--fy', (y / innerHeight * 100).toFixed(1) + '%');
+
+      const zap = document.createElement('div');
+      zap.className = 'zap';
+      const main = boltPath(x, y, 46, false);
+      zap.innerHTML =
+        `<svg viewBox="0 0 ${innerWidth} ${innerHeight}" preserveAspectRatio="none">` +
+        `<path class="bolt-glow" d="${main}"/>` +
+        `<path class="bolt-core" d="${main}"/>` +
+        `<path class="bolt-branch" d="${boltPath(x, y, 80, true)}"/></svg>`;
+
+      document.body.append(flash, zap);
+      setTimeout(() => { flash.remove(); zap.remove(); }, 550);
+    }
+
+    // knock the letters loose; the element reassembles itself afterwards
+    const esc = ch => ch === '&' ? '&amp;' : ch === '<' ? '&lt;' : ch === '>' ? '&gt;' : ch;
+
+    function shatterText(el) {
+      if (el.dataset.shattering) return;
+      const text = el.textContent;
+      if (!text.trim() || text.length > 160) return;
+
+      const original = el.innerHTML;
+      el.dataset.shattering = '1';
+      el.classList.add('is-shattered');
+      el.innerHTML = [...text].map(ch =>
+        ch.trim() === '' ? ch :
+        `<span class="shard" style="--sdx:${((Math.random() * 2 - 1) * 90).toFixed(0)}px;` +
+        `--srot:${((Math.random() * 2 - 1) * 240).toFixed(0)}deg;` +
+        `animation-delay:${(Math.random() * 110).toFixed(0)}ms">${esc(ch)}</span>`).join('');
+
+      setTimeout(() => {
+        el.innerHTML = original;
+        el.classList.remove('is-shattered');
+        delete el.dataset.shattering;
+      }, 1700);
+    }
+
+    function spawnBeam(x, y) {
+      // fire toward the far side of the screen, with a little tilt
+      const toRight = x < innerWidth / 2;
+      const beam = document.createElement('i');
+      beam.className = 'beam';
+      beam.style.left = x + 'px';
+      beam.style.top = y + 'px';
+      beam.style.width = (toRight ? innerWidth - x : x) + 80 + 'px';
+      beam.style.rotate = ((toRight ? 0 : 180) + (Math.random() * 2 - 1) * 6).toFixed(1) + 'deg';
+
+      const muzzle = document.createElement('i');
+      muzzle.className = 'beam-muzzle';
+      muzzle.style.left = x + 'px';
+      muzzle.style.top = y + 'px';
+
+      document.body.append(beam, muzzle);
+      setTimeout(() => { beam.remove(); muzzle.remove(); }, 520);
+    }
+
+    addEventListener('pointerdown', e => {
+      // the equipped weapon swings/slashes/blasts
+      cur.classList.remove('is-strike');
+      void cur.offsetWidth;                       // restart mid-animation clicks
+      cur.classList.add('is-strike');
+      setTimeout(() => cur.classList.remove('is-strike'), 330);
+
+      const skin = cur.dataset.skin;
+
+      if (skin === 'hammer') {
+        spawnLightning(e.clientX, e.clientY);
+        // struck text breaks and falls — but never the cursor picker's chips
+        const hit = e.target.closest('h1, h2, h3, h4, p, a, button, li, b');
+        if (hit && !hit.closest('.curpick')) shatterText(hit);
+      } else if (skin === 'gauntlet') {
+        spawnBeam(e.clientX, e.clientY);
+      } else {
+        spawnSparks(e.clientX, e.clientY);
+      }
 
       // a 1.5px stage kick sells the impact; Z-mode only, where the stage
       // is a transform root anyway
