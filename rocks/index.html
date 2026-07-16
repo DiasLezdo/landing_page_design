@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kunnam Rocks — we move mountains</title>
+<meta name="description" content="Kunnam Rocks — from a midnight blast to the harbour wall. One mountain, two men, many trucks.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="rocks.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<!-- the tipper truck, drawn once, used everywhere. Internal parts listen to
+     CSS vars (--dump bed tilt, --roll wheels, --fill bed load) inherited
+     from whichever <use> wrapper carries them. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="tipper" viewBox="0 0 300 160">
+    <g class="tip__bed">
+      <path d="M24 40 L180 40 L172 108 L32 108 Z" fill="#8f97a8" stroke="#232733" stroke-width="5"/>
+      <g class="tip__mound">
+        <circle cx="70" cy="42" r="15" fill="#7b7264" stroke="#232733" stroke-width="4"/>
+        <circle cx="106" cy="36" r="18" fill="#8a8172" stroke="#232733" stroke-width="4"/>
+        <circle cx="142" cy="43" r="14" fill="#7b7264" stroke="#232733" stroke-width="4"/>
+      </g>
+    </g>
+    <path d="M186 60 h44 l24 28 v20 h-68 Z" fill="#ffc93c" stroke="#232733" stroke-width="5"/>
+    <path d="M194 68 h30 l16 20 h-46 Z" fill="#bfe8f2" stroke="#232733" stroke-width="4"/>
+    <rect x="24" y="104" width="234" height="12" fill="#232733"/>
+    <g class="tip__wheel"><circle cx="66" cy="126" r="20" fill="#232733"/><circle cx="66" cy="126" r="8" fill="#e8ecf5"/></g>
+    <g class="tip__wheel"><circle cx="120" cy="126" r="20" fill="#232733"/><circle cx="120" cy="126" r="8" fill="#e8ecf5"/></g>
+    <g class="tip__wheel"><circle cx="222" cy="126" r="20" fill="#232733"/><circle cx="222" cy="126" r="8" fill="#e8ecf5"/></g>
+  </symbol>
+</svg>
+
+<!-- ============================== nav ============================== -->
+<header class="nav">
+  <a class="nav__brand" href="../index.html" aria-label="Back to DIAZ">
+    <span class="nav__badge">
+      <svg viewBox="0 0 52 50" fill="none" aria-hidden="true">
+        <defs>
+          <mask id="navRock" maskUnits="userSpaceOnUse" x="0" y="0" width="52" height="50">
+            <rect width="52" height="50" fill="#fff"/>
+            <circle cx="30.8" cy="20.8" r="5" fill="#000"/>
+            <circle cx="39.5" cy="30.9" r="6.8" fill="#000"/>
+          </mask>
+        </defs>
+        <g mask="url(#navRock)">
+          <path d="M22 4 L22 46 L2 46 Z" fill="currentColor" opacity=".6"/>
+          <path d="M22 4 L44 46 L22 46 Z" fill="currentColor"/>
+        </g>
+        <circle cx="39.5" cy="30.9" r="5" fill="currentColor"/>
+      </svg>
+    </span>
+    <b>Kunnam <i>Rocks</i></b>
+  </a>
+
+  <!-- shift clock: the hands run midnight → noon as you scroll -->
+  <div class="shift" aria-hidden="true">
+    <svg viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="20" r="17" fill="#fff7e3" stroke="#232733" stroke-width="4"/>
+      <line class="shift__hand" id="hourHand" x1="20" y1="20" x2="20" y2="9" stroke="#232733" stroke-width="3.4" stroke-linecap="round"/>
+    </svg>
+    <b id="shiftLabel">00:00 · night shift</b>
+  </div>
+
+  <a class="orderbtn" href="#" id="orderBtn">Order stone</a>
+</header>
+
+<div class="cue" id="cue" aria-hidden="true">Scroll — the night shift starts now</div>
+
+<!-- =========================== the depth =========================== -->
+<main id="stage" aria-label="The Kunnam Rocks story">
+
+  <div class="env" aria-hidden="true">
+    <i class="moonx" id="moonx"></i>
+    <i class="sunx" id="sunx"></i>
+    <div class="stars" id="stars"></div>
+    <div class="range" id="range"></div>
+    <div class="floor" id="floor"></div>
+  </div>
+
+  <!-- ============ intro ============ -->
+  <section class="slide slide--intro" id="r0" data-slide data-hold="0.5" data-zone="night">
+    <div class="pair">
+      <div class="worker worker--main">
+        <i class="worker__helmet"></i>
+        <img class="worker__head" src="../travels/images/character_main.png" alt="The owner">
+        <i class="worker__torso"><i class="worker__vest"></i></i>
+        <i class="worker__arm a1"></i><i class="worker__arm a2"></i>
+        <i class="worker__leg l"></i><i class="worker__leg r"></i>
+      </div>
+      <div class="worker worker--full">
+        <i class="worker__helmet"></i>
+        <i class="worker__face"><i class="eye e1"></i><i class="eye e2"></i><i class="brow b1"></i><i class="brow b2"></i><i class="stache"></i></i>
+        <i class="worker__torso"><i class="worker__vest"></i></i>
+        <i class="worker__arm a1"></i><i class="worker__arm a2"></i>
+        <i class="worker__leg l"></i><i class="worker__leg r"></i>
+      </div>
+    </div>
+    <div class="intro">
+      <p class="intro__kicker">Quarry to quay</p>
+      <h1 class="intro__logo">KUNNAM<span>ROCKS</span></h1>
+      <p class="intro__tag">We move mountains. Legally. In pieces.</p>
+    </div>
+  </section>
+
+  <!-- ============ 1 · the blast (night) ============ -->
+  <section class="slide" id="r1" data-slide data-hold="1.6" data-zone="night">
+    <p class="jobtag"><b>Job 01 · 00:40</b> Set. Clear. Boom.</p>
+
+    <div class="quarry">
+      <svg class="mount" viewBox="0 0 560 360" fill="none" aria-hidden="true">
+        <!-- the peak that will come apart -->
+        <path class="mount__base" d="M60 340 L200 90 L280 150 L392 40 L520 340 Z"/>
+        <g class="chunk c1"><path d="M392 40 L448 148 L360 156 L332 96 Z"/></g>
+        <g class="chunk c2"><path d="M448 148 L494 250 L380 244 L360 156 Z"/></g>
+        <g class="chunk c3"><path d="M360 156 L380 244 L268 236 L280 150 L332 96 Z"/></g>
+        <!-- crack seams, revealed at the boom -->
+        <path class="crack k1" d="M332 96 L360 156 L380 244"/>
+        <path class="crack k2" d="M360 156 L448 148"/>
+        <path class="crack k3" d="M280 150 L268 236 L380 244"/>
+        <!-- charges -->
+        <g class="charge ch1"><rect x="342" y="102" width="10" height="20" rx="3"/><circle class="charge__led" cx="347" cy="98" r="4"/></g>
+        <g class="charge ch2"><rect x="398" y="146" width="10" height="20" rx="3"/><circle class="charge__led" cx="403" cy="142" r="4"/></g>
+        <g class="charge ch3"><rect x="312" y="188" width="10" height="20" rx="3"/><circle class="charge__led" cx="317" cy="184" r="4"/></g>
+        <!-- wire down to the plunger -->
+        <path class="wire" d="M317 208 Q240 300 96 322"/>
+      </svg>
+
+      <!-- both of them: on the ledge, then down behind the plunger -->
+      <div class="crew" id="blastCrew">
+        <div class="worker worker--main worker--s">
+          <i class="worker__helmet"></i>
+          <img class="worker__head" src="../travels/images/character_main.png" alt="">
+          <i class="worker__torso"><i class="worker__vest"></i></i>
+          <i class="worker__arm a1"></i><i class="worker__arm a2"></i>
+          <i class="worker__leg l"></i><i class="worker__leg r"></i>
+        </div>
+        <div class="worker worker--full worker--s">
+          <i class="worker__helmet"></i>
+          <i class="worker__face"><i class="eye e1"></i><i class="eye e2"></i><i class="brow b1"></i><i class="brow b2"></i><i class="stache"></i></i>
+          <i class="worker__torso"><i class="worker__vest"></i></i>
+          <i class="worker__arm a1"></i><i class="worker__arm a2"></i>
+          <i class="worker__leg l"></i><i class="worker__leg r"></i>
+        </div>
+      </div>
+
+      <div class="plunger">
+        <i class="plunger__handle"></i>
+        <i class="plunger__box"></i>
+      </div>
+
+      <i class="flash" aria-hidden="true"></i>
+      <i class="shockring" aria-hidden="true"></i>
+      <i class="dust d1"></i><i class="dust d2"></i><i class="dust d3"></i>
+      <b class="boomword">BOOM!</b>
+    </div>
+    <i class="donetag">BLAST CLEARED ✓</i>
+  </section>
+
+  <!-- ============ 2 · hammers (night) ============ -->
+  <section class="slide" id="r2" data-slide data-hold="1.3" data-zone="night2">
+    <p class="jobtag"><b>Job 02 · 03:15</b> Big rocks → small rocks.</p>
+
+    <div class="smashyard">
+      <div class="worker worker--main worker--hammer wm">
+        <i class="worker__helmet"></i>
+        <img class="worker__head" src="../travels/images/character_main.png" alt="">
+        <i class="worker__torso"><i class="worker__vest"></i></i>
+        <i class="worker__arm a1"><i class="hammer"></i></i>
+        <i class="worker__arm a2"></i>
+        <i class="worker__leg l"></i><i class="worker__leg r"></i>
+      </div>
+
+      <div class="bigrock">
+        <svg viewBox="0 0 260 180" fill="none" aria-hidden="true">
+          <g class="half hl"><path d="M28 168 Q10 96 74 52 L128 34 L130 168 Z"/></g>
+          <g class="half hr"><path d="M128 34 L196 46 Q252 92 236 168 L130 168 Z"/></g>
+          <path class="crack k1" d="M128 34 L122 86 L136 128 L130 168"/>
+          <path class="crack k2" d="M122 86 L84 108"/>
+          <path class="crack k3" d="M136 128 L178 118"/>
+        </svg>
+        <i class="pebble pb1"></i><i class="pebble pb2"></i><i class="pebble pb3"></i>
+      </div>
+
+      <div class="worker worker--full worker--hammer wf">
+        <i class="worker__helmet"></i>
+        <i class="worker__face"><i class="eye e1"></i><i class="eye e2"></i><i class="brow b1"></i><i class="brow b2"></i><i class="stache"></i></i>
+        <i class="worker__torso"><i class="worker__vest"></i></i>
+        <i class="worker__arm a1"><i class="hammer"></i></i>
+        <i class="worker__arm a2"></i>
+        <i class="worker__leg l"></i><i class="worker__leg r"></i>
+      </div>
+
+      <i class="clink c1">✦</i><i class="clink c2">✧</i>
+    </div>
+    <i class="donetag">SIZED ✓</i>
+  </section>
+
+  <!-- ============ 3 · loading (first light) ============ -->
+  <section class="slide" id="r3" data-slide data-hold="1.3" data-zone="predawn">
+    <p class="jobtag"><b>Job 03 · 05:50</b> Everything into the tippers.</p>
+
+    <div class="loadyard">
+      <div class="pile">
+        <i></i><i></i><i></i><i></i>
+      </div>
+
+      <div class="worker worker--full worker--toss">
+        <i class="worker__helmet"></i>
+        <i class="worker__face"><i class="eye e1"></i><i class="eye e2"></i><i class="brow b1"></i><i class="brow b2"></i><i class="stache"></i></i>
+        <i class="worker__torso"><i class="worker__vest"></i></i>
+        <i class="worker__arm a1"></i><i class="worker__arm a2"></i>
+        <i class="worker__leg l"></i><i class="worker__leg r"></i>
+      </div>
+
+      <i class="flyrock f1"></i><i class="flyrock f2"></i><i class="flyrock f3"></i>
+
+      <div class="fleet">
+        <span class="truck t1"><svg viewBox="0 0 300 160"><use href="#tipper"/></svg></span>
+        <span class="truck t2"><svg viewBox="0 0 300 160"><use href="#tipper"/></svg></span>
+        <span class="truck t3"><svg viewBox="0 0 300 160"><use href="#tipper"/></svg></span>
+      </div>
+
+      <div class="worker worker--main worker--clip">
+        <i class="worker__helmet"></i>
+        <img class="worker__head" src="../travels/images/character_main.png" alt="">
+        <i class="worker__torso"><i class="worker__vest"></i></i>
+        <i class="worker__arm a1"><i class="clipboard"></i></i>
+        <i class="worker__arm a2"></i>
+        <i class="worker__leg l"></i><i class="worker__leg r"></i>
+      </div>
+    </div>
+    <i class="donetag">LOADED ✓</i>
+  </section>
+
+  <!-- ============ 4 · convoy + the incident (morning) ============ -->
+  <section class="slide" id="r4" data-slide data-hold="1.9" data-zone="morning">
+    <p class="jobtag"><b>Job 04 · 08:20</b> Convoy. Then… convoy again.</p>
+
+    <div class="roadway">
+      <div class="convoy" id="convoy">
+        <span class="truck ct1"><svg viewBox="0 0 300 160"><use href="#tipper"/></svg></span>
+        <span class="truck ct2"><svg viewBox="0 0 300 160"><use href="#tipper"/></svg>
+          <i class="spillrock s1"></i><i class="spillrock s2"></i><i class="spillrock s3"></i>
+          <i class="bang">!</i>
+          <i class="jack"></i>
+        </span>
+        <span class="truck ct3"><svg viewBox="0 0 300 160"><use href="#tipper"/></svg></span>
+      </div>
+
+      <div class="fixers" id="fixers">
+        <div class="worker worker--main worker--s">
+          <i class="worker__helmet"></i>
+          <img class="worker__head" src="../travels/images/character_main.png" alt="">
+          <i class="worker__torso"><i class="worker__vest"></i></i>
+          <i class="worker__arm a1"></i><i class="worker__arm a2"></i>
+          <i class="worker__leg l"></i><i class="worker__leg r"></i>
+        </div>
+        <div class="worker worker--full worker--s">
+          <i class="worker__helmet"></i>
+          <i class="worker__face"><i class="eye e1"></i><i class="eye e2"></i><i class="brow b1"></i><i class="brow b2"></i><i class="stache"></i></i>
+          <i class="worker__torso"><i class="worker__vest"></i></i>
+          <i class="worker__arm a1"></i><i class="worker__arm a2"></i>
+          <i class="worker__leg l"></i><i class="worker__leg r"></i>
+        </div>
+      </div>
+
+      <i class="cone cn1"></i><i class="cone cn2"></i>
+    </div>
+    <i class="donetag">FIXED ✓ · ROLLING</i>
+  </section>
+
+  <!-- ============ 5 · the harbour (day) ============ -->
+  <section class="slide" id="r5" data-slide data-hold="1.4" data-zone="day">
+    <p class="jobtag"><b>Job 05 · 11:30</b> Delivery: one harbour wall.</p>
+
+    <div class="harbour">
+      <i class="sea"><i class="wavecap"></i></i>
+      <div class="ship"><i class="ship__hull"></i><i class="ship__cabin"></i><i class="ship__stack"></i></div>
+      <div class="crane"><i class="crane__tower"></i><i class="crane__arm"></i><i class="crane__cable"></i><i class="crane__hook"></i></div>
+      <i class="gull g1"></i><i class="gull g2"></i>
+
+      <i class="dock"></i>
+
+      <span class="truck dumper" id="dumper"><svg viewBox="0 0 300 160"><use href="#tipper"/></svg></span>
+      <i class="droprock dr1"></i><i class="droprock dr2"></i><i class="droprock dr3"></i>
+
+      <div class="wall">
+        <i class="wallrock w1"></i><i class="wallrock w2"></i><i class="wallrock w3"></i>
+        <i class="wallrock w4"></i><i class="wallrock w5"></i>
+      </div>
+    </div>
+    <i class="donetag">DELIVERED ✓</i>
+  </section>
+
+  <!-- ============ finale ============ -->
+  <section class="slide slide--end" id="r6" data-slide data-hold="0.6" data-zone="day">
+    <div class="endcard">
+      <h2>We move mountains.</h2>
+      <p>Blasted at midnight, sized before dawn, delivered by lunch —
+         Kunnam Rocks supplies stone for harbours, roads and anything
+         that needs to stay put.</p>
+      <a class="orderbtn orderbtn--big" href="#">Order stone · ₹640 per tonne</a>
+      <footer class="foot">
+        <span>Kunnam Rocks is a fictional brand — a landing page study.</span>
+        <a href="../index.html">← Back to DIAZ</a>
+      </footer>
+    </div>
+  </section>
+</main>
+
+<div id="zspacer" aria-hidden="true"></div>
+
+<script src="rocks.js"></script>
+</body>
+</html>
