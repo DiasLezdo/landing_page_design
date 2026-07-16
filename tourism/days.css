@@ -1159,7 +1159,9 @@ i, em { font-style: normal; }
    viewport at their seams, and a parked car full of the gang's faces was
    photobombing the end of the cricket scene while they still stood there. */
 .car--s6 {
-  translate: calc(-30em + var(--carin, 0) * 42vw + var(--carout, 0) * 70vw) 0;
+  /* parks beside the bench — far enough in that the whole car is on screen
+     while c5 gets pulled across the gap */
+  translate: calc(-30em + var(--carin, 0) * 52vw + var(--carout, 0) * 70vw) 0;
   opacity: min(1, calc(var(--carin, 0) * 6));
 }
 .car--s6 .car__face.f5 { opacity: var(--gone, 0); }

@@ -67,7 +67,7 @@
   const spacer = document.getElementById('spacer');
   const scenes = [...document.querySelectorAll('[data-scene]')];
 
-  const SPEED = 0.92;   // px of world per px of scroll — slightly slow = weighty
+  const SPEED = 0.8;    // px of world per px of scroll — slow enough to watch
 
   function vw(n) { return innerWidth * n / 100; }
 
@@ -93,6 +93,16 @@
   const set = (el, name, val) => el.style.setProperty(name, val);
   const on  = (el, cls, cond) => el.classList.toggle(cls, cond);
 
+  // Progress of a scene-local anchor point across the VIEWPORT: 0 as it
+  // enters at the right edge, 1 as it leaves at the left. Action beats are
+  // timed on this, not on scene-u — scene-u keeps counting long after the
+  // camera has panned the actors off screen, which is how the broom used to
+  // fly behind the viewer's back. `stretch` widens the window so a beat
+  // gets more scroll distance while its anchor drifts across.
+  let camX = 0;
+  const cross = (i, anchorVw, stretch = 1.15) =>
+    clamp((camX + innerWidth - (offsets[i] + vw(anchorVw))) / (innerWidth * stretch), 0, 1);
+
   const CHOREO = {
 
     s1(u, el) {
@@ -117,53 +127,61 @@
     },
 
     s4(u, el) {
-      // c3 gets dragged off the sofa, protesting
-      set(el, '--out', ease(seg(u, .5, .78)).toFixed(3));
+      // timed on the HOUSE crossing the screen, so every beat is watchable
+      const p = cross(4, 62);
+
+      set(el, '--out', ease(seg(p, .42, .6)).toFixed(3));
       const c3 = el.querySelector('.slot--s4c3 .char');
-      on(c3, 'pose-slouch', u < .55);
-      on(c3, 'is-walking', u > .62);
+      on(c3, 'pose-slouch', p < .46);
+      on(c3, 'is-walking', p > .52);
 
       // amma winds up, then the broom flies a full spinning arc
-      set(el, '--wind', ease(seg(u, .55, .68)).toFixed(3));
-      const b = ease(seg(u, .68, .95));
+      set(el, '--wind', ease(seg(p, .44, .52)).toFixed(3));
+      const b = ease(seg(p, .52, .7));
       set(el, '--bo', b > 0 ? '1' : '0');
-      set(el, '--bx', (b * 26).toFixed(2));
+      set(el, '--bx', (b * 28).toFixed(2));
       set(el, '--by', (-Math.sin(b * Math.PI) * 10).toFixed(2));
       set(el, '--br', (b * 720).toFixed(0));
 
-      on(el.querySelector('.bubble--s4a'), 'is-on', u > .22 && u < .55);
-      on(el.querySelector('.bubble--s4b'), 'is-on', u > .34 && u < .6);
-      on(el.querySelector('.bubble--s4c'), 'is-on', u > .62 && u < .95);
+      on(el.querySelector('.bubble--s4a'), 'is-on', p > .16 && p < .42);
+      on(el.querySelector('.bubble--s4b'), 'is-on', p > .26 && p < .48);
+      on(el.querySelector('.bubble--s4c'), 'is-on', p > .54 && p < .8);
     },
 
     s5(u, el) {
-      on(el.querySelector('.bubble--s5a'), 'is-on', u > .2 && u < .55);
+      // timed on the PITCH crossing the screen
+      const p = cross(5, 52);
+
+      on(el.querySelector('.bubble--s5a'), 'is-on', p > .14 && p < .38);
 
       // the swing, the ball, the SIX
-      set(el, '--swing', ease(seg(u, .38, .5)).toFixed(3));
-      const b = ease(seg(u, .46, .8));
+      set(el, '--swing', ease(seg(p, .32, .42)).toFixed(3));
+      const b = ease(seg(p, .4, .64));
       set(el, '--ballo', b > 0 && b < 1 ? '1' : '0');
       set(el, '--ballx', (b * 46).toFixed(2));
       set(el, '--bally', (-Math.sin(b * Math.PI) * 24).toFixed(2));
-      on(el, 'six-on', u > .52 && u < .9);
-      on(el.querySelector('.bubble--s5b'), 'is-on', u > .6 && u < .92);
+      on(el, 'six-on', p > .44 && p < .78);
+      on(el.querySelector('.bubble--s5b'), 'is-on', p > .52 && p < .8);
 
       const c4 = el.querySelector('.slot--s5c4 .char');
-      on(c4, 'pose-bat', u < .62);
-      on(c4, 'is-cheering', u > .52 && u < .7);
+      on(c4, 'pose-bat', p < .52);
+      on(c4, 'is-cheering', p > .44 && p < .62);
     },
 
     s6(u, el) {
-      set(el, '--carin', ease(seg(u, .12, .38)).toFixed(3));
-      set(el, '--roll', (u * 900).toFixed(0));
-      on(el.querySelector('.bubble--s6a'), 'is-on', u > .2 && u < .5);
-      on(el.querySelector('.bubble--s6b'), 'is-on', u > .42 && u < .68);
+      // timed on the BUS STOP crossing the screen
+      const p = cross(6, 55, 1.25);
+
+      set(el, '--carin', ease(seg(p, .08, .3)).toFixed(3));
+      set(el, '--roll', (p * 1100).toFixed(0));
+      on(el.querySelector('.bubble--s6a'), 'is-on', p > .18 && p < .42);
+      on(el.querySelector('.bubble--s6b'), 'is-on', p > .34 && p < .56);
 
       // c5 tips toward the car, vanishes, and his face pops up inside it
-      set(el, '--pull', ease(seg(u, .52, .7)).toFixed(3));
-      set(el, '--gone', u > .68 ? '1' : '0');
-      set(el, '--carout', ease(seg(u, .74, 1)).toFixed(3));
-      on(el, 'dust-on', u > .74);
+      set(el, '--pull', ease(seg(p, .44, .6)).toFixed(3));
+      set(el, '--gone', p > .58 ? '1' : '0');
+      set(el, '--carout', ease(seg(p, .64, .92)).toFixed(3));
+      on(el, 'dust-on', p > .66 && p < .95);
     },
 
     s7(u, el) {
@@ -187,6 +205,7 @@
 
   function update() {
     const x = clamp(scrollY * SPEED, 0, maxX());
+    camX = x;   // cross() reads this
 
     set(world, '--x', x.toFixed(1));
     set(hills, '--hx', (-x * 0.3).toFixed(1));
