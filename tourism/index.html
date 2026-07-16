@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KUNNAM Days — trips with your people</title>
+<meta name="description" content="KUNNAM Days — five friends, one car, and the trip that starts at a tea shop. Scroll the story.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="days.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<!-- ============================== nav ============================== -->
+<header class="nav">
+  <a class="nav__brand" href="../index.html" aria-label="Back to DIAZ">
+    <span class="nav__sun">
+      <svg viewBox="0 0 52 50" fill="none" aria-hidden="true">
+        <path d="M22 4 L22 46 L2 46 Z" fill="currentColor" opacity=".6"/>
+        <path d="M22 4 L44 46 L22 46 Z" fill="currentColor"/>
+      </svg>
+    </span>
+    <b>Kunnam <i>Days</i></b>
+  </a>
+
+  <!-- the journey so far: a tiny car drives this road as you scroll -->
+  <div class="navroad" aria-hidden="true">
+    <i class="navroad__car" id="navCar"></i>
+  </div>
+
+  <a class="bookbtn" href="#" id="bookBtn">Book now</a>
+</header>
+
+<div class="cue" id="cue" aria-hidden="true">Scroll — the story goes this way <b>→</b></div>
+
+<!-- ============================ the world ============================ -->
+<main class="stage" aria-label="The KUNNAM Days story">
+
+  <!-- fixed backdrop -->
+  <div class="sky" aria-hidden="true">
+    <i class="sun"></i>
+    <i class="cloud cl1"></i><i class="cloud cl2"></i><i class="cloud cl3"></i>
+  </div>
+  <div class="hills" id="hills" aria-hidden="true"></div>
+
+  <!-- the strip that pans -->
+  <div class="world" id="world">
+
+    <!-- ============ S0 · title ============ -->
+    <section class="scene scene--intro" id="s0" data-scene data-w="100">
+      <div class="intro">
+        <p class="intro__kicker">A Kunnam thing</p>
+        <h1 class="intro__logo">KUNNAM<span>DAYS</span></h1>
+        <p class="intro__tag">Five friends. One car. Zero plans that survive the tea shop.</p>
+      </div>
+    </section>
+
+    <!-- ============ S1 · the tea shop ============ -->
+    <section class="scene" id="s1" data-scene data-w="120">
+      <p class="board">Chapter 1 · The usual place</p>
+
+      <div class="teashop">
+        <i class="teashop__awning"></i>
+        <b class="teashop__sign">TEA · ₹10</b>
+        <i class="teashop__counter"></i>
+        <i class="teashop__kettle"></i>
+        <i class="steam st1"></i><i class="steam st2"></i>
+      </div>
+
+      <div class="bench bench--a"></div>
+      <div class="table">
+        <i class="chai"></i><i class="chai chai--b"></i>
+        <i class="steam st3"></i>
+      </div>
+      <div class="bench bench--b"></div>
+
+      <div class="slot slot--s1c1" data-char="c1" data-pose="sit" data-talk></div>
+      <div class="slot slot--s1c2" data-char="c2" data-pose="sit" data-talk data-flip></div>
+
+      <div class="paper" id="paper"><i></i><i></i><i></i></div>
+
+      <div class="bubble bubble--s1a">Machaan… holidays?</div>
+      <div class="bubble bubble--s1b">Hmm. Tea first.</div>
+    </section>
+
+    <!-- ============ S2 · the discovery ============ -->
+    <section class="scene" id="s2" data-scene data-w="110">
+      <p class="board">Chapter 2 · Page 7, bottom corner</p>
+
+      <div class="bigpaper">
+        <b class="bigpaper__mast">THE DAILY KUNNAM</b>
+        <i class="bigpaper__line"></i><i class="bigpaper__line"></i><i class="bigpaper__line short"></i>
+        <div class="ad">
+          <b>KUNNAM DAYS</b>
+          <span>5 days · hills to beach · ₹9,999</span>
+          <em>your gang goes free-ish*</em>
+        </div>
+      </div>
+
+      <div class="slot slot--s2c2" data-char="c2" data-pose="stand"></div>
+      <i class="spark sp1"></i><i class="spark sp2"></i><i class="spark sp3"></i>
+
+      <div class="bubble bubble--s2">DEI. Look at THIS.</div>
+    </section>
+
+    <!-- ============ S3 · the plan ============ -->
+    <section class="scene" id="s3" data-scene data-w="115">
+      <p class="board">Chapter 3 · Recruitment drive</p>
+
+      <i class="lamppost lp1"></i>
+      <i class="shopfront sf1"></i>
+      <i class="shopfront sf2"></i>
+      <i class="lamppost lp2"></i>
+
+      <div class="walkers" id="walkers">
+        <div class="slot slot--s3c1" data-char="c1" data-pose="walk"></div>
+        <div class="slot slot--s3c2" data-char="c2" data-pose="walk"></div>
+        <i class="map"></i>
+      </div>
+
+      <div class="bubble bubble--s3">First stop: that lazy fellow.</div>
+    </section>
+
+    <!-- ============ S4 · the lazy one ============ -->
+    <section class="scene" id="s4" data-scene data-w="130">
+      <p class="board">Chapter 4 · Extraction</p>
+
+      <div class="house">
+        <i class="house__roof"></i>
+        <i class="house__wall"></i>
+        <div class="tv"><i class="tv__glow"></i></div>
+        <div class="sofa"></div>
+        <i class="house__door"></i>
+      </div>
+
+      <div class="slot slot--s4c3" data-char="c3" data-pose="slouch"></div>
+      <div class="slot slot--s4c1" data-char="c1" data-pose="stand"></div>
+      <div class="slot slot--s4c2" data-char="c2" data-pose="stand" data-flip></div>
+
+      <div class="amma" id="amma">
+        <i class="amma__body"></i><i class="amma__head"></i><i class="amma__arm"></i>
+      </div>
+      <i class="broom" id="broom"></i>
+
+      <div class="bubble bubble--s4a">Dei! Trip! Get UP!</div>
+      <div class="bubble bubble--s4b">5 more minutes…</div>
+      <div class="bubble bubble--s4c bubble--pow">AIYYO! TAKE HIM!</div>
+    </section>
+
+    <!-- ============ S5 · the cricketer ============ -->
+    <section class="scene" id="s5" data-scene data-w="125">
+      <p class="board">Chapter 5 · Deep mid-wicket</p>
+
+      <i class="pitch"></i>
+      <i class="stumps"></i>
+      <div class="slot slot--s5c4" data-char="c4" data-pose="bat"></div>
+      <i class="bat" id="bat"></i>
+      <i class="ball" id="ball"></i>
+      <b class="six" id="six">SIX!</b>
+
+      <div class="gang3">
+        <div class="slot slot--s5c1" data-char="c1" data-pose="stand"></div>
+        <div class="slot slot--s5c2" data-char="c2" data-pose="stand"></div>
+        <div class="slot slot--s5c3" data-char="c3" data-pose="stand"></div>
+      </div>
+
+      <div class="bubble bubble--s5a">Last ball, then beach?</div>
+      <div class="bubble bubble--s5b">…okay. Coming.</div>
+    </section>
+
+    <!-- ============ S6 · the bus stop ============ -->
+    <section class="scene" id="s6" data-scene data-w="125">
+      <p class="board">Chapter 6 · The kidnapping (friendly)</p>
+
+      <div class="busstop">
+        <i class="busstop__roof"></i>
+        <i class="busstop__pole"></i>
+        <b class="busstop__sign">BUS</b>
+        <i class="busstop__bench"></i>
+      </div>
+
+      <div class="slot slot--s6c5" data-char="c5" data-pose="sit"></div>
+
+      <div class="car car--s6" id="carS6">
+        <svg class="car__svg" viewBox="0 0 340 150" fill="none" aria-hidden="true">
+          <path d="M20 96 Q20 62 58 58 L92 30 Q98 22 110 22 L216 22 Q228 22 234 30 L266 58 Q318 64 318 96 L318 108 Q318 116 310 116 L28 116 Q20 116 20 108 Z" fill="#ff8d3a" stroke="#402a1c" stroke-width="5"/>
+          <path d="M104 32 L204 32 L228 58 L96 58 Z" fill="#bfe8f2" stroke="#402a1c" stroke-width="4"/>
+          <rect x="150" y="32" width="6" height="26" fill="#402a1c"/>
+          <g class="car__wheel"><circle cx="86" cy="116" r="22" fill="#402a1c"/><circle cx="86" cy="116" r="9" fill="#ffe9c2"/></g>
+          <g class="car__wheel"><circle cx="252" cy="116" r="22" fill="#402a1c"/><circle cx="252" cy="116" r="9" fill="#ffe9c2"/></g>
+          <rect x="20" y="86" width="298" height="8" fill="#e5671f"/>
+        </svg>
+        <img class="car__face f1" src="images/character_first.png" alt="">
+        <img class="car__face f2" src="images/charater_second.png" alt="">
+        <img class="car__face f3" src="images/character_third.png" alt="">
+        <img class="car__face f4" src="images/character_fourth.png" alt="">
+        <!-- c5 pops up in here the moment he's pulled off the bench -->
+        <img class="car__face f5" src="images/character_fifth.png" alt="">
+      </div>
+
+      <i class="dust" id="dust"></i>
+      <div class="bubble bubble--s6a">Bus is late anyway!</div>
+      <div class="bubble bubble--s6b">Get in. Beach emergency.</div>
+    </section>
+
+    <!-- ============ S7 · the road trip ============ -->
+    <section class="scene" id="s7" data-scene data-w="190">
+      <p class="board">Chapter 7 · Windows down</p>
+
+      <i class="peak pk1"></i><i class="peak pk2"></i><i class="peak pk3"></i>
+      <i class="tree t1"></i><i class="tree t2"></i><i class="tree t3"></i><i class="tree t4"></i>
+      <i class="bird b1"></i><i class="bird b2"></i><i class="bird b3"></i>
+
+      <div class="car car--trip" id="carTrip">
+        <svg class="car__svg" viewBox="0 0 340 150" fill="none" aria-hidden="true">
+          <path d="M20 96 Q20 62 58 58 L92 30 Q98 22 110 22 L216 22 Q228 22 234 30 L266 58 Q318 64 318 96 L318 108 Q318 116 310 116 L28 116 Q20 116 20 108 Z" fill="#ff8d3a" stroke="#402a1c" stroke-width="5"/>
+          <path d="M104 32 L204 32 L228 58 L96 58 Z" fill="#bfe8f2" stroke="#402a1c" stroke-width="4"/>
+          <rect x="150" y="32" width="6" height="26" fill="#402a1c"/>
+          <g class="car__wheel"><circle cx="86" cy="116" r="22" fill="#402a1c"/><circle cx="86" cy="116" r="9" fill="#ffe9c2"/></g>
+          <g class="car__wheel"><circle cx="252" cy="116" r="22" fill="#402a1c"/><circle cx="252" cy="116" r="9" fill="#ffe9c2"/></g>
+          <rect x="20" y="86" width="298" height="8" fill="#e5671f"/>
+        </svg>
+        <img class="car__face f1" src="images/character_first.png" alt="">
+        <img class="car__face f2" src="images/charater_second.png" alt="">
+        <img class="car__face f3" src="images/character_third.png" alt="">
+        <img class="car__face f4" src="images/character_fourth.png" alt="">
+        <img class="car__face f5" src="images/character_fifth.png" alt="">
+        <i class="note n1">♪</i><i class="note n2">♫</i>
+      </div>
+
+      <div class="bubble bubble--s7">This. THIS is the life.</div>
+    </section>
+
+    <!-- ============ S8 · the beach ============ -->
+    <section class="scene scene--beach" id="s8" data-scene data-w="165">
+      <p class="board">Chapter 8 · Kunnam Days</p>
+
+      <i class="sea"><i class="wave"></i></i>
+      <i class="sand"></i>
+      <i class="palm pm1"></i><i class="palm pm2"></i>
+      <i class="brella"></i>
+      <i class="beachball" id="beachball"></i>
+      <i class="tourist tr1"></i><i class="tourist tr2"></i><i class="tourist tr3"></i>
+
+      <div class="slot slot--s8c1" data-char="c1" data-pose="dance"></div>
+      <div class="slot slot--s8c2" data-char="c2" data-pose="dance"></div>
+      <div class="slot slot--s8c3" data-char="c3" data-pose="relax"></div>
+      <div class="slot slot--s8c4" data-char="c4" data-pose="dance"></div>
+      <div class="slot slot--s8c5" data-char="c5" data-pose="selfie"></div>
+      <i class="phone"></i>
+
+      <div class="endcard" id="endcard">
+        <h2>Your gang. Your days.</h2>
+        <p>5-day trips across hills, roads and one very good beach — planned, driven and chai-stopped by <b>KUNNAM Days</b>.</p>
+        <a class="bookbtn bookbtn--big" href="#">Book your days · ₹9,999</a>
+        <footer class="foot">
+          <span>Kunnam Days is a fictional brand — a landing page study.</span>
+          <a href="../index.html">← Back to DIAZ</a>
+        </footer>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div id="spacer" aria-hidden="true"></div>
+
+<script src="days.js"></script>
+</body>
+</html>
