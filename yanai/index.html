@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yanai — the uncle behind Kunnam</title>
+<meta name="description" content="Yanai — tea shop owner, staring-contest champion, and the reluctant godfather of every Kunnam story.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="yanai.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<!-- ============================== nav ============================== -->
+<header class="nav">
+  <a class="nav__brand" href="../index.html" aria-label="Back to DIAZ">
+    <span class="nav__badge" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none">
+        <path d="M8 26 Q8 8 24 8 Q40 8 40 26 Q40 34 24 34 Q8 34 8 26 Z" fill="#c06a3c"/>
+        <path d="M12 20 l8 3 M36 20 l-8 3" stroke="#241812" stroke-width="4" stroke-linecap="round"/>
+        <path d="M13 30 Q24 24 35 30 Q30 38 24 36 Q18 38 13 30 Z" fill="#241812"/>
+      </svg>
+    </span>
+    <b>Yanai<i>.</i></b>
+  </a>
+
+  <span class="mood" aria-live="polite">MOOD: <b id="moodChip">GRUMPY</b></span>
+
+  <a class="teabtn" href="#visit" id="teaBtn">Tea · ₹10</a>
+</header>
+
+<div class="cue" id="cue" aria-hidden="true">He can see your cursor. He is not impressed.</div>
+
+<main class="wrap">
+
+  <!-- ======================= the man himself ======================= -->
+  <div class="stage">
+    <div class="stagepad">
+      <div class="bubble" id="quote" aria-live="polite">…hmph.</div>
+
+      <svg class="rig" id="rig" viewBox="0 0 380 640" fill="none" role="img"
+           aria-label="Yanai, a bald uncle with a huge mustache, holding a tiny tea cup and frowning">
+
+        <!-- ground shadow -->
+        <ellipse cx="190" cy="588" rx="155" ry="18" fill="#241812" opacity=".14"/>
+
+        <!-- ============ legs & pants: the power stance ============ -->
+        <g id="g-legs">
+          <path d="M86 398 L58 522 L118 536 L172 468 Q190 452 208 468 L262 536 L322 522 L294 398 Z"
+                fill="#3e5a49" stroke="#241812" stroke-width="7" stroke-linejoin="round"/>
+          <path class="shoeL" d="M60 524 Q34 530 38 544 Q42 554 78 554 L124 548 L118 526 Z"
+                fill="#241812"/>
+          <path class="shoeR" d="M320 524 Q346 530 342 544 Q338 554 302 554 L256 548 L262 526 Z"
+                fill="#241812"/>
+        </g>
+
+        <!-- ============ body: the tee ============ -->
+        <g id="g-body">
+          <path d="M126 268 L254 268 Q306 278 318 336 Q336 374 302 402 Q240 416 190 416 Q140 416 78 402 Q44 374 62 336 Q74 278 126 268 Z"
+                fill="#262222" stroke="#241812" stroke-width="7" stroke-linejoin="round"/>
+          <!-- left arm (his right): tucked behind the back, elbow peeking -->
+          <path d="M46 344 Q44 384 64 400 L90 388 Q78 362 90 336 Z"
+                fill="#c06a3c" stroke="#241812" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M82 292 Q42 316 46 348 L92 338 Q86 314 96 302 Z"
+                fill="#262222" stroke="#241812" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M48 388 Q42 408 60 414 Q80 418 88 404 L90 388 Q68 398 48 388 Z"
+                fill="#c06a3c" stroke="#241812" stroke-width="5" stroke-linejoin="round"/>
+        </g>
+
+
+        <!-- ============ the head ============ -->
+        <g id="g-head" class="head">
+          <!-- ears -->
+          <path class="ear" d="M42 194 Q8 192 10 220 Q12 250 44 246 Q36 220 42 194 Z"
+                fill="#b05e30" stroke="#241812" stroke-width="6" stroke-linejoin="round"/>
+          <path class="ear" d="M28 208 Q22 220 30 234" stroke="#241812" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path class="ear" d="M338 194 Q372 192 370 220 Q368 250 336 246 Q344 220 338 194 Z"
+                fill="#b05e30" stroke="#241812" stroke-width="6" stroke-linejoin="round"/>
+          <path class="ear" d="M352 208 Q358 220 350 234" stroke="#241812" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+          <!-- the dome -->
+          <path d="M190 46 Q322 54 334 162 Q356 244 302 284 Q258 312 190 312 Q122 312 78 284 Q24 244 46 162 Q58 54 190 46 Z"
+                fill="#c06a3c" stroke="#241812" stroke-width="8" stroke-linejoin="round"/>
+          <!-- dome highlight -->
+          <path d="M124 76 Q164 54 220 62 Q174 66 142 88 Z" fill="#d3844f" opacity=".8"/>
+
+          <!-- ============ brows: the weather system ============ -->
+          <g id="g-browL" class="browL" transform="translate(0 12)">
+            <path d="M84 136 Q118 118 162 132 Q166 146 158 152 Q120 140 90 152 Q80 146 84 136 Z"
+                  fill="#241812"/>
+          </g>
+          <g id="g-browR" class="browR" transform="translate(0 12)">
+            <path d="M296 136 Q262 118 218 132 Q214 146 222 152 Q260 140 290 152 Q300 146 296 136 Z"
+                  fill="#241812"/>
+          </g>
+
+          <!-- ============ eyes ============ -->
+          <g id="g-eyeL">
+            <ellipse cx="137" cy="178" rx="23" ry="19" fill="#f7f1e6" stroke="#241812" stroke-width="5"/>
+            <g class="pupil"><circle cx="139" cy="180" r="11.5" fill="#241812"/></g>
+            <rect class="lid" x="110" y="155" width="54" height="46" rx="18" fill="#c06a3c"/>
+            <path d="M115 165 Q137 155 159 165" stroke="#241812" stroke-width="6" stroke-linecap="round" fill="none"/>
+          </g>
+          <g id="g-eyeR">
+            <ellipse cx="243" cy="178" rx="23" ry="19" fill="#f7f1e6" stroke="#241812" stroke-width="5"/>
+            <g class="pupil"><circle cx="241" cy="180" r="11.5" fill="#241812"/></g>
+            <rect class="lid" x="216" y="155" width="54" height="46" rx="18" fill="#c06a3c"/>
+            <path d="M221 165 Q243 155 265 165" stroke="#241812" stroke-width="6" stroke-linecap="round" fill="none"/>
+          </g>
+
+          <!-- ============ THE mustache: solid slab, ragged hem; nose sits on top ============ -->
+          <g id="g-stache" class="stache">
+            <path d="M120 232 Q106 240 108 258 Q110 276 130 280 Q138 286 152 281 Q164 287 177 282 Q190 288 203 282 Q216 287 228 281 Q242 286 250 280 Q270 276 272 258 Q274 240 260 232 Q190 214 120 232 Z"
+                  fill="#241812"/>
+          </g>
+
+          <!-- ============ the snub nose ============ -->
+          <g id="g-nose">
+            <path d="M156 200 Q152 234 166 240 Q190 248 214 240 Q228 234 224 200 Q208 192 190 192 Q172 192 156 200 Z"
+                  fill="#e79867" stroke="#241812" stroke-width="6" stroke-linejoin="round"/>
+            <ellipse cx="172" cy="222" rx="7" ry="9" fill="#241812"/>
+            <ellipse cx="208" cy="222" rx="7" ry="9" fill="#241812"/>
+          </g>
+
+          <!-- ============ mouths: one visible at a time ============ -->
+          <g id="g-mouth">
+            <path class="mouth mouth--frown is-on" d="M172 295 Q190 286 208 295" stroke="#241812" stroke-width="6" stroke-linecap="round" fill="none"/>
+            <path class="mouth mouth--flat" d="M174 291 L206 291" stroke="#241812" stroke-width="6" stroke-linecap="round" fill="none"/>
+            <path class="mouth mouth--smile" d="M170 287 Q190 296 210 287" stroke="#241812" stroke-width="6" stroke-linecap="round" fill="none"/>
+          </g>
+
+          <!-- ============ fume puffs: hidden until he has had ENOUGH ============ -->
+          <g class="puff puff--l" aria-hidden="true">
+            <circle cx="24" cy="180" r="9" fill="#f3ead9" stroke="#241812" stroke-width="4"/>
+            <circle cx="11" cy="163" r="6" fill="#f3ead9" stroke="#241812" stroke-width="4"/>
+          </g>
+          <g class="puff puff--r" aria-hidden="true">
+            <circle cx="356" cy="180" r="9" fill="#f3ead9" stroke="#241812" stroke-width="4"/>
+            <circle cx="369" cy="163" r="6" fill="#f3ead9" stroke="#241812" stroke-width="4"/>
+          </g>
+        </g>
+        <!-- ============ the cup arm: rotates at the shoulder to sip ============ -->
+        <g id="g-armcup" class="armcup">
+          <path d="M334 336 Q344 356 338 372 Q332 390 314 388 L252 374 Q244 364 250 354 L300 356 Q296 344 286 332 Z"
+                fill="#c06a3c" stroke="#241812" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M290 292 Q334 308 336 338 L284 330 Q290 310 276 300 Z"
+                fill="#262222" stroke="#241812" stroke-width="6" stroke-linejoin="round"/>
+          <!-- forearm + hand -->
+          <path d="M246 338 Q272 332 278 352 Q282 370 260 374 Q240 374 240 356 L242 344 Z"
+                fill="#c06a3c" stroke="#241812" stroke-width="5" stroke-linejoin="round"/>
+          <!-- the tiny cup -->
+          <g id="g-cup">
+            <path d="M188 330 L248 330 Q246 366 218 366 Q190 366 188 330 Z"
+                  fill="#f7f1e6" stroke="#241812" stroke-width="5" stroke-linejoin="round"/>
+            <ellipse cx="218" cy="330" rx="30" ry="8" fill="#b06a2f" stroke="#241812" stroke-width="4"/>
+            <path d="M248 336 Q266 338 263 352 Q260 362 246 360" stroke="#241812" stroke-width="5" fill="none"/>
+            <g class="steam" aria-hidden="true">
+              <path class="s1" d="M206 316 q-5 -8 0 -15 q5 -7 0 -14" stroke="#241812" stroke-width="3.4" stroke-linecap="round" opacity=".4"/>
+              <path class="s2" d="M230 316 q5 -8 0 -15 q-5 -7 0 -14" stroke="#241812" stroke-width="3.4" stroke-linecap="round" opacity=".4"/>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ======================= the dossier ======================= -->
+  <div class="copy">
+
+    <section class="sec sec--hero" data-mood="grumpy" data-chip="GRUMPY">
+      <p class="kicker">The uncle behind Kunnam</p>
+      <h1 class="logo">YANAI<i>.</i></h1>
+      <p class="lead">Tea shop owner. Staring-contest champion. Every Kunnam
+         story on this site started on his benches — the trip, the travels,
+         the rocks, all of it. He has never once been impressed.</p>
+      <p class="hint">Move your cursor. He's watching it.</p>
+    </section>
+
+    <section class="sec" data-mood="squint" data-chip="GRUMPIER">
+      <h2>The glare</h2>
+      <p>Undefeated in staring contests since 1994. The sun blinked first.
+         Loan defaulters have repaid at a glance. Do not ask for extra sugar.</p>
+      <p class="hint">Click an eye. Or flick an ear. He reacts.</p>
+    </section>
+
+    <section class="sec" data-mood="tea" data-chip="CAFFEINATED">
+      <h2>The tea</h2>
+      <p>Sixty cups a day — brewed, poured and judged. The ₹10 price hasn't
+         moved since the shop opened, and neither has he.</p>
+      <p class="hint">Click him. He'll demonstrate the sip.</p>
+    </section>
+
+    <section class="sec" data-mood="groom" data-chip="MAGNIFICENT">
+      <h2>The mustache</h2>
+      <p>Combed twice daily. Insured, allegedly. It has out-negotiated
+         wholesalers, silenced arguments and survived three decades of
+         kettle steam. It has its own opinions and most of them are no.</p>
+      <p class="hint">Click the mustache. Grooming is permitted, once.</p>
+    </section>
+
+    <section class="sec" data-mood="verdict" data-chip="JUDGING">
+      <h2>The verdict</h2>
+      <p>Every Kunnam venture came to his shop for a blessing. This is the
+         entire transcript:</p>
+      <ul class="verdicts">
+        <li><b>Kunnam Play</b><span>"loud."</span></li>
+        <li><b>Kunnam Pictures</b><span>"long."</span></li>
+        <li><b>Kunnam Relay</b><span>"just walk over."</span></li>
+        <li><b>Kunnam Parcel</b><span>"acceptable."</span></li>
+        <li><b>KUNNAM Days</b><span>"took my benches."</span></li>
+        <li><b>Kunnam Travels</b><span>"my nephew."</span></li>
+        <li><b>Kunnam Rocks</b><span>"good stones."</span></li>
+      </ul>
+      <p class="hint">Click his belly, his nose, or his shoes. Careful with the nose.</p>
+    </section>
+
+    <section class="sec sec--end" id="visit" data-mood="smile" data-chip="ALMOST HAPPY">
+      <h2>He almost smiled once.</h2>
+      <p>The day he noticed his tea shop appears in every single Kunnam
+         story — the corner of the mouth moved, witnesses say. Then he
+         charged all of them rent.</p>
+      <a class="teabtn teabtn--big" href="#">Visit the shop · Tea ₹10</a>
+      <footer class="foot">
+        <span>Yanai is a fictional character — a landing page study.</span>
+        <a href="../index.html">← Back to DIAZ</a>
+      </footer>
+    </section>
+  </div>
+</main>
+
+<script src="yanai.js"></script>
+</body>
+</html>
