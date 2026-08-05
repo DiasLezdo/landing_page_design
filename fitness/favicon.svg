@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- Kunnam Fit: the dotted ring on night navy. -->
+  <rect width="48" height="48" rx="10" fill="#14162a"/>
+  <ellipse cx="24" cy="20" rx="15" ry="5.4" fill="none" stroke="#c9cdea" stroke-width="1.7" stroke-dasharray="1.8 3"/>
+  <ellipse cx="24" cy="25.5" rx="15" ry="5.4" fill="none" stroke="#c9cdea" stroke-width="1.7" stroke-dasharray="1.8 3"/>
+  <ellipse cx="24" cy="31" rx="15" ry="5.4" fill="none" stroke="#e8e9f2" stroke-width="1.9"/>
+  <ellipse cx="24" cy="33" rx="17.5" ry="6.2" fill="none" stroke="#6b71f2" stroke-width="1.2" opacity=".55"/>
+</svg>
