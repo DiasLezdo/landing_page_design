@@ -7,6 +7,8 @@
    - clicks are routed by body part: mustache preens, eyes wink, ears earn an
      eye-roll, the nose is a mistake, the belly jiggles, the legs stomp,
      anywhere else demonstrates the sip
+   - his computer chair is parked stage-left; click it and it rolls under him,
+     he lounges, and sips on a loop until you disturb him
    - ignore him long enough and the foot starts tapping
    Everything degrades: no JS = a fine standing portrait, reduced motion =
    moods still switch but nothing loops.
@@ -20,6 +22,7 @@
   const finePointer = matchMedia('(pointer: fine)').matches;
 
   const rig = document.getElementById('rig');
+  const headEl = document.getElementById('g-head');
   const moodChip = document.getElementById('moodChip');
   const quote = document.getElementById('quote');
   const cue = document.getElementById('cue');
@@ -64,7 +67,8 @@
   updateMood();
 
   /* ---------------------------------------------------------------------------
-     The stare — pupils track the cursor
+     The stare — pupils track the cursor (anchored to the head, not the svg:
+     the chair margin in the viewBox pulls the svg centre off his face)
      ------------------------------------------------------------------------ */
 
   if (finePointer && !reduce) {
@@ -74,12 +78,11 @@
       // he won't bother while drinking or with his eyes shut
       if (rig.classList.contains('is-sipping')) return;
 
-      const r = rig.getBoundingClientRect();
-      // face centre, roughly — upper third of the rig
+      const r = headEl.getBoundingClientRect();
       const fx = r.left + r.width * 0.5;
-      const fy = r.top + r.height * 0.28;
-      const dx = clamp((e.clientX - fx) / (r.width * 0.5), -1, 1);
-      const dy = clamp((e.clientY - fy) / (r.height * 0.5), -1, 1);
+      const fy = r.top + r.height * 0.55;
+      const dx = clamp((e.clientX - fx) / (r.width * 0.9), -1, 1);
+      const dy = clamp((e.clientY - fy) / (r.height * 1.1), -1, 1);
 
       for (const p of pupils) {
         p.style.setProperty('--px', (dx * 7).toFixed(1));
@@ -140,11 +143,49 @@
   }
 
   /* ---------------------------------------------------------------------------
+     The chair — roll in, lounge, sip on a loop
+     ------------------------------------------------------------------------ */
+
+  let seated = false;
+  let seatT = 0;
+
+  function seat() {
+    seated = true;
+    rig.classList.add('is-seated');
+    say('Finally. Sitting-down management.', 1800);
+
+    // once the roll-in settles: the lounge sip, on repeat
+    const loop = () => {
+      if (!seated) return;
+      sipping = true;
+      rig.classList.add('is-sipping');
+      setTimeout(() => {
+        rig.classList.remove('is-sipping');
+        sipping = false;
+        seatT = setTimeout(loop, 2200);
+      }, reduce ? 60 : 1100);
+    };
+    seatT = setTimeout(loop, 900);
+  }
+
+  function unseat() {
+    seated = false;
+    clearTimeout(seatT);
+    rig.classList.remove('is-seated', 'is-sipping');
+    sipping = false;
+    say("Break's over.", 1200);
+  }
+
+  /* ---------------------------------------------------------------------------
      Click routing — every part of him has an opinion
      ------------------------------------------------------------------------ */
 
   rig.addEventListener('click', e => {
     const hit = sel => !!(e.target.closest && e.target.closest(sel));
+
+    // the chair toggles the whole arrangement
+    if (hit('#g-chair')) { seated ? unseat() : seat(); return; }
+    if (seated) { unseat(); return; }
 
     // interrupting the sip is a mistake
     if (sipping) {
@@ -169,7 +210,7 @@
   function armIdle() {
     rig.classList.remove('is-waiting');
     clearTimeout(idleT);
-    idleT = setTimeout(() => rig.classList.add('is-waiting'), 9000);
+    idleT = setTimeout(() => { if (!seated) rig.classList.add('is-waiting'); }, 9000);
   }
   ['scroll', 'pointermove', 'pointerdown', 'keydown', 'touchstart'].forEach(ev =>
     addEventListener(ev, armIdle, { passive: true }));

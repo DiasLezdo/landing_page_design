@@ -141,7 +141,7 @@ i, b { font-style: normal; }
 }
 
 .rig {
-  width: min(100%, 52vh);
+  width: min(100%, 71vh);
   height: auto;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -360,6 +360,32 @@ i, b { font-style: normal; }
 
 /* almost happy: he raises the cup. a toast. historic. */
 .rig.m-smile .armcup { rotate: -10deg; }
+
+/* ============================================================
+   the computer chair — click it: he sits, he lounges, he sips
+   ============================================================ */
+
+#g-chair {
+  cursor: pointer;
+  translate: -230px 0;
+  transition: translate .65s cubic-bezier(.3, 1.25, .45, 1);
+}
+.rig.is-seated #g-chair { translate: 0 0; }
+
+/* leg swap: power stance out, sprawl in */
+#g-legs, #g-legs-sit { transition: opacity .28s var(--ease); }
+#g-legs-sit { opacity: 0; pointer-events: none; }
+.rig.is-seated #g-legs-sit { opacity: 1; }
+.rig.is-seated #g-legs { opacity: 0; pointer-events: none; }
+
+/* the lounge: everything above the waist settles back and down */
+#g-body { transition: translate .5s var(--ease), rotate .5s var(--ease); }
+.rig.is-seated #g-body { translate: 0 26px; rotate: -4deg; }
+.rig.is-seated .head { translate: 0 30px; rotate: -6deg; }
+.rig.is-seated .armcup { translate: 0 26px; }
+
+/* seated sip: same swing, from the lounged position */
+.rig.is-seated.is-sipping .head { rotate: -1deg; translate: 0 34px; }
 
 /* ---------------------------------------------------- quote bubble */
 
