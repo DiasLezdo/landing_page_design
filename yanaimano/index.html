@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>YanaiMano — Supermano</title>
+<meta name="description" content="YanaiMano — a tiny platformer starring Supermano, the grumpy tea uncle. Two worlds, eight levels, sixty cups of tea.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="mano.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<!-- ============================== nav ============================== -->
+<header class="nav">
+  <a class="nav__brand" href="../index.html" aria-label="Back to DIAZ">
+    <span class="nav__badge" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none">
+        <path d="M8 26 Q8 8 24 8 Q40 8 40 26 Q40 34 24 34 Q8 34 8 26 Z" fill="#c06a3c"/>
+        <path d="M12 20 l8 3 M36 20 l-8 3" stroke="#241812" stroke-width="4" stroke-linecap="round"/>
+        <path d="M13 30 Q24 24 35 30 Q30 38 24 36 Q18 38 13 30 Z" fill="#241812"/>
+      </svg>
+    </span>
+    <b>YanaiMano<i>.</i></b>
+  </a>
+
+  <span class="nav__tag">SUPERMANO · 2 WORLDS · 8 LEVELS</span>
+
+  <a class="nav__back" href="../yanai/index.html">Meet Yanai</a>
+</header>
+
+<!-- ============================== the cabinet ============================== -->
+<main class="hall">
+  <div class="cab">
+    <canvas id="game" width="960" height="540"
+            aria-label="YanaiMano — a platformer. Arrow keys or A and D to move, Space to jump."></canvas>
+
+    <!-- touch controls (coarse pointers only) -->
+    <div class="pad pad--move" aria-hidden="true">
+      <button class="pad__btn" id="btnL">◀</button>
+      <button class="pad__btn" id="btnR">▶</button>
+    </div>
+    <div class="pad pad--jump" aria-hidden="true">
+      <button class="pad__btn pad__btn--big" id="btnJ">▲</button>
+    </div>
+  </div>
+
+  <p class="keys">
+    <b>←&nbsp;→</b> / <b>A&nbsp;D</b> move&nbsp;&nbsp;·&nbsp;&nbsp;<b>Space</b> jump
+    &nbsp;&nbsp;·&nbsp;&nbsp;<b>Enter</b> confirm&nbsp;&nbsp;·&nbsp;&nbsp;<b>M</b> sound
+  </p>
+
+  <noscript><p class="keys">Supermano needs JavaScript to run. The kettle stays cold without it.</p></noscript>
+
+  <footer class="foot">
+    <span>YanaiMano is a fictional arcade from the DIAZ landing-page series.
+    Supermano never smiles, even when he wins.</span>
+    <a href="../index.html">← Back to DIAZ</a>
+  </footer>
+</main>
+
+<script src="mano.js"></script>
+</body>
+</html>

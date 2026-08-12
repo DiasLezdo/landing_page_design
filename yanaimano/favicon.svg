@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- Supermano: the uncle on an arcade-gold badge. -->
+  <circle cx="24" cy="24" r="22" fill="#e8b84b" stroke="#241812" stroke-width="2.4"/>
+  <path d="M24 8 Q38 9 39 20 Q40 28 34 31 Q29 34 24 34 Q19 34 14 31 Q8 28 9 20 Q10 9 24 8 Z"
+        fill="#c06a3c" stroke="#241812" stroke-width="2.2"/>
+  <path d="M13 17 Q17 14.5 21 16 L20.5 18.4 Q17 17.4 14 19 Z" fill="#241812"/>
+  <path d="M35 17 Q31 14.5 27 16 L27.5 18.4 Q31 17.4 34 19 Z" fill="#241812"/>
+  <circle cx="18" cy="21" r="2.8" fill="#f7f1e6" stroke="#241812" stroke-width="1.3"/>
+  <circle cx="30" cy="21" r="2.8" fill="#f7f1e6" stroke="#241812" stroke-width="1.3"/>
+  <circle cx="18.5" cy="21.5" r="1.3" fill="#241812"/>
+  <circle cx="29.5" cy="21.5" r="1.3" fill="#241812"/>
+  <path d="M15 27 Q14 29.5 16 30.6 Q19 32 24 31 Q29 32 32 30.6 Q34 29.5 33 27 Q24 24 15 27 Z" fill="#241812"/>
+  <path d="M10 38 L38 38 Q36 43 24 43 Q12 43 10 38 Z" fill="#3e5a49" stroke="#241812" stroke-width="2"/>
+</svg>

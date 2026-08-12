@@ -1,0 +1,171 @@
+/* ============================================================
+   YanaiMano — the arcade cabinet
+   ------------------------------------------------------------
+   Cream-and-ink Yanai styling around a fixed 960x540 canvas
+   that scales to fit. Touch pads appear on coarse pointers.
+   ============================================================ */
+
+:root {
+  --ink:   #241812;
+  --cream: #f6ead6;
+  --paper: #fff7e6;
+  --tea:   #b06a2f;
+  --green: #3e5a49;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { background: var(--cream); }
+
+body {
+  background:
+    radial-gradient(90% 60% at 70% 10%, #fbf3e2 0%, var(--cream) 60%),
+    var(--cream);
+  color: var(--ink);
+  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+  font-weight: 700;
+  min-height: 100vh;
+}
+
+b, i { font-style: normal; }
+
+/* ------------------------------------------------------------ nav */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 max(18px, 3vw);
+  background: color-mix(in srgb, var(--paper) 84%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 3px solid var(--ink);
+}
+
+.nav__brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+.nav__badge {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  display: grid; place-items: center;
+  overflow: hidden;
+}
+.nav__badge svg { width: 30px; }
+.nav__brand b { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 20px; }
+.nav__brand i { color: var(--tea); }
+
+.nav__tag {
+  margin-inline: auto;
+  font-size: 11.5px;
+  letter-spacing: .2em;
+  color: #7a6a58;
+}
+
+.nav__back {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--paper);
+  background: var(--green);
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  padding: 7px 18px;
+  text-decoration: none;
+  box-shadow: 3px 4px 0 var(--ink);
+  transition: translate .15s, box-shadow .15s;
+  white-space: nowrap;
+}
+.nav__back:hover { translate: -1px -2px; box-shadow: 5px 6px 0 var(--ink); }
+
+/* ------------------------------------------------------------ cabinet */
+
+.hall {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: clamp(14px, 3vh, 34px) 14px 30px;
+}
+
+.cab {
+  position: relative;
+  width: min(96vw, 1080px);
+  border: 4px solid var(--ink);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 8px 10px 0 rgba(36, 24, 18, .28);
+  background: #10131f;
+}
+
+#game {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  touch-action: none;
+}
+
+/* touch pads */
+.pad {
+  position: absolute;
+  bottom: 12px;
+  display: none;
+  gap: 10px;
+  z-index: 3;
+}
+.pad--move { left: 12px; }
+.pad--jump { right: 12px; }
+
+@media (pointer: coarse) {
+  .pad { display: flex; }
+}
+
+.pad__btn {
+  width: 62px; height: 62px;
+  border-radius: 50%;
+  border: 3px solid var(--ink);
+  background: rgba(255, 247, 230, .82);
+  color: var(--ink);
+  font-size: 22px;
+  font-family: inherit;
+  font-weight: 800;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.pad__btn--big { width: 74px; height: 74px; }
+.pad__btn:active { background: var(--paper); }
+
+.keys {
+  font-size: 13.5px;
+  color: #7a6a58;
+}
+.keys b {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-bottom-width: 4px;
+  border-radius: 7px;
+  padding: 2px 8px;
+  color: var(--ink);
+  font-size: 12.5px;
+}
+
+.foot {
+  margin-top: 8px;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  color: #7a6a58;
+  text-align: center;
+  max-width: 70ch;
+}
+.foot a { color: var(--tea); font-weight: 800; }
+
+@media (max-width: 700px) {
+  .nav__tag { display: none; }
+}
